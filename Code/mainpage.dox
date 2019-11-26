@@ -1,0 +1,276 @@
+/// \mainpage 
+///
+/// Purpose
+/// =======
+///
+/// This code is intended to help you to verify some of the results claimed in
+/// the paper "Tourneys and the fast generation and obfuscation of closed
+/// knight's tours", by Ian Parberry. It will perform three types of task based
+/// on the algorithms described there.
+///
+/// 1. Generation of tourneys, which are saved in TeX format for inclusion
+/// in a paper.
+///
+/// 2. Timing (elapsed time and CPU time) on multiple samples for a range of
+/// board sizes .
+///
+/// 3. Measurement of  single-move and double-move frequencies on multiple
+/// samples for a single board size.
+///
+/// The code is multi-threaded and is currently set to use one less than the
+/// maximum number of concurrent threads on the hardware on which is is run
+/// (to ensure that there is a thread left for the user on long runs). It is
+/// written in C++ using the C++ standard library. There are about 5,300 lines
+/// of source code, 3,400 lines not counting comment blocks, and 2,200 lines
+/// not counting comment blocks and blank lines.
+///
+/// Recommended Background
+/// ======================
+///
+/// It is assumed that the reader of this code knows how a knight moves in the
+/// game of chess and is familiar with the concepts typically taught in an
+/// undergraduate class on algorithms and data structures such as queues,
+/// graphs and spanning trees.
+///
+/// Introduction
+/// ============
+///
+/// A knight in the game of chess has \f$8\f$ possible moves available to it, 
+/// numbered \f$0\f$ through \f$7\f$. The figure below shows the \f$8\f$ 
+/// possible moves for a knight on the center square. The numbers \f$0\f$
+/// through \f$7\f$ will, in the code described here, be called the *index*
+/// of a knight's move.
+///
+/// \image html movenumbers.png
+///
+/// For all \f$n \geq 1\f$, the \f$n \times n\f$ *knight's graph* \f$K_n\f$ is
+/// an undirected bipartite graph with \f$n^2\f$ vertices, one for each square
+/// (called a *cell* in this code) of an \f$n \times n\f$ chessboard, and an
+/// edge between vertices \f$u\f$ and \f$v\f$ iff a knight can move from cell
+/// \f$u\f$ to cell \f$v\f$. \f$K_n\f$ can easily seen to be bipartite since,
+/// if we color the board squares alternately in gray and white in row-major
+/// order, then every knight's move goes from a gray square to a white square
+/// or vice-versa (see the image below, for example). \f$K_1\f$, and \f$K_2\f$
+/// zero edges. \f$K_3\f$ has \f$8\f$ edges and degree \f$2\f$. \f$K_4\f$ has
+/// \f$24\f$ edges and degree \f$4\f$. For \f$n \geq 5\f$, \f$K_n\f$ has 
+/// \f$4n^2 - O(n)\f$ edges and degree \f$8\f$. \f$K_n\f$ is completely
+/// connected iff \f$n \geq 4\f$. The figure below shows \f$K_6\f$ superimposed
+/// over a \f$6 \times 6\f$ chessboard.
+///
+/// \image html knightsgraph.png
+///
+/// A *knight's tour* is a Hamiltonian cycle on a knight's graph. It is 
+/// well-known that knight's tours exist on \f$n \times n\f$ chessboards for 
+/// all even \f$n \geq 6\f$. A *tourney* is a vertex-disjoint cycle cover of
+/// the knight's graph, that is, a set of cycles on the knight's graph such
+/// that every vertex of the graph is in exactly one cycle. 
+///
+/// Compiling the Code
+/// ==================
+///
+/// Windows and Visual Studio
+/// -------------------------
+///
+/// A Visual Studio solution file **Generate.sln** has been provided in the
+/// root folder. It has been tested with Visual Studio 2019 Community under Windows 10.
+///
+/// Unix and g++
+/// ------------
+///
+/// A **make** file has been placed in the **Code** directory. Type
+/// "make generator" to create the executable file **Generate.exe**. It has been
+/// tested with g++ 7.4 on the Ubuntu 18.04.1 subsystem under Windows 10.
+///
+/// Running the Code
+/// ================
+///
+/// You will be prompted for various parameters. At the first prompt you may
+/// enter 'q' to quit. At subsequent text prompts you may type 'h' for help on
+/// the possible responses or 'r' to restart. The first prompt requires you to
+/// enter your task type, *generate*, *time*, or *measure*.
+///
+/// * **Generate**: A knight's tour or tourney will be saved in SVG format (a
+/// vector-graphics image file that can be viewed in a browser) and
+/// as a text file listing the knight's move 0-7 from each cell of a square
+/// chessboard. You will be prompted for the generation algorithm, the tourney
+/// type, whether or not the board is to be blurred, and the board size. The 
+/// name of the file will consist of substrings specifying the generation
+/// method, tourney type, and board size.
+///
+/// \image html run.png
+///
+/// * **Time**: A The time required to generate a number of knight's tours or
+/// tourneys of a range of sizes will be saved in a text file. You will be 
+/// prompted for the generation algorithm, the tourney type, whether or not the
+/// board is to be blurred, the number of samples (number of boards generated
+/// of each size) and a lower and upper size range. The name of the text file
+/// will have the prefix *Time* followed by substrings specifying the
+/// generation method, tourney type, and number of samples. The output will
+/// consist of three tab-separated columns for board size, CPU seconds, and
+/// elapsed seconds.
+///
+/// \image html output-time.png
+///
+/// * **Measure**: Statistics on the frequency of single and double moves for a
+/// number of knight's tours or tourneys will be measured and saved in a text
+/// file. You will be prompted for the number of samples (number of boards
+/// generated of each size) and the board size. The name of the text file
+/// will have the prefix *Stats* followed by substrings specifying the
+/// generation method, tourney type, board size, and number of samples. The
+/// output will consist of tab-separated columns as follows. The first column
+/// contains row headers. The remaining eight columns will list the observed
+/// mean and standard deviation for the frequency of moves 0-7 over all samples.
+///
+/// \image html output-stats.png
+///
+/// Code Organization
+/// =================
+///
+/// The source code can be divided into five categories: General,
+/// Services, Multithreading, Generators, and the implementation of the Shatter, 
+/// Join, and Blur algorithms from the paper. Each of these categories is
+/// described in a separate section below. If your time is limited, I recommend
+/// you start by skimming CBaseBoard, then proceeding directly to CRail and
+/// CBoard. If you are interested in generators for knight's tours and 
+/// tourneys, then proceed to the Generators section below. The rest of the
+/// code is fairly straightforward and may be omitted unless you enjoy reading
+/// that sort of thing.
+///
+/// General
+/// -------
+///
+/// General support code.
+///
+/// <center>
+/// <table>
+///   <tr>
+///     <td><center><b>Code</b></center></td>
+///     <td><center><b>Description</b></center></td>
+///   <tr>
+///     <td>BaseBoard.cpp, BaseBoard.h</td>
+///     <td> The base chessboard CBaseBoard. </td>
+///   <tr>
+///     <td>Defines.h</td>
+///     <td>Defines and enumerated types.</td>
+///   <tr>
+///     <td>Helpers.cpp, Helpers.h</td>
+///     <td> Helper functions.</td>
+///   <tr>
+///     <td>Includes.h</td>
+///     <td>Includes.</td>
+///   <tr>
+///     <td>Input.cpp, Input.h</td>
+///     <td> Functions to solicit, read, and parse the input.</td>
+///   <tr>
+///     <td>Main.cpp</td>
+///     <td>Main.</td>
+///   <tr>
+///     <td>Structs.cpp, Structs.h</td>
+///     <td> Data structures CTourneyDesc, CSearchRequest, CSearchResult, and CRect.</td>
+///   <tr>
+///     <td>Task.cpp, Task.h</td>
+///     <td> Task-related functions.</td>
+/// </table>
+/// </center>
+///
+/// Services
+/// --------
+///
+/// Some standard services including pseudorandomness and time measurement.
+///
+/// <center>
+/// <table>
+///   <tr>
+///     <td><center><b>Code</b></center></td>
+///     <td><center><b>Description</b></center></td>
+///   <tr>
+///     <td>Random.cpp, Random.h</td>
+///     <td> Pseudorandom number generator CRandom.</td>
+///   <tr>
+///     <td>Timer.cpp, Timer.h</td>
+///     <td> Platform-independent timer CTimer.</td>
+/// </table>
+/// </center>
+///
+/// Multithreading
+/// --------------
+///
+/// Support for multi-threading of time-consuming things like randomized tourney
+/// generators and the gathering of run-time and move frequency statistics.
+///
+/// <center>
+/// <table>
+///   <tr>
+///     <td><center><b>Code</b></center></td>
+///     <td><center><b>Description</b></center></td>
+///   <tr>
+///     <td>SearchThread.cpp, SearchThread.h</td>
+///     <td> Search thread CSearchThread.</td>
+///   <tr>
+///     <td>SearchThreadQueues.cpp, SearchThreadQueues.h</td>
+///     <td> Search thread queues CSearchThreadQueues.</td>
+///   <tr>
+///     <td>ThreadSafeQueue.cpp, ThreadSafeQueue.h</td>
+///     <td> Thread-safe queue data structure CThreadSafeQueue.</td>
+/// </table>
+/// </center>
+///
+/// Generators
+/// ----------
+///
+/// Some standard knight's tour generators and the obvious tourney generators derived
+/// from them. Using Warnsdorf's algorithm for tourneys requires a little thought, and
+/// braided concentric tourneys are new but quite simple to understand.
+///
+/// <center>
+/// <table>
+///   <tr>
+///     <td><center><b>Code</b></center></td>
+///     <td><center><b>Description</b></center></td>
+///   <tr>
+///     <td>ConcentricBraid.cpp, ConcentricBraid.h</td>
+///     <td> Concentric braid generator CConcentricBraid.</td>
+///   <tr>
+///     <td>DivideAndConquer.cpp, DivideAndConquer.h</td>
+///     <td> Divide-and-conquer generator CDivideAndConquer.</td>
+///   <tr>
+///     <td>Generator.cpp, Generator.h</td>
+///     <td> Generic generator CGenerator.</td>
+///   <tr>
+///     <td>NeuralNet.cpp, NeuralNet.h</td>
+///     <td> Hopfield neural network CNeuralNet for CTakefujiLee, with CNeuron.</td>
+///   <tr>
+///     <td>TakefujiLee.cpp, TakefujiLee.h</td>
+///     <td> Takefuji-Lee generator CTakefujiLee.</td>
+///   <tr>
+///     <td>Tile.cpp, Tile.h</td>
+///     <td> Tiles CTile for CDivideAndConquer.</td>
+///   <tr>
+///     <td>Warnsdorf.cpp, Warnsdorf.h</td>
+///     <td> Warnsdorf's generator CWarnsdorf.</td>
+/// </table>
+/// </center>
+///
+/// Shatter, Join, and Blur
+/// -----------------------
+///
+/// Implementation of the the new algorithms from the paper.
+///
+/// <center>
+/// <table>
+///   <tr>
+///     <td><center><b>Code</b></center></td>
+///     <td><center><b>Description</b></center></td>
+///   <tr>
+///     <td>Board.cpp, Board.h</td>
+///     <td> Blurrable chessboard CBoard</td>
+///   <tr>
+///     <td>Graph.cpp, Graph.h</td>
+///     <td> Graph data structure CGraph, with CVertex and CEdge.</td>
+///   <tr>
+///     <td>Rail.cpp, Rail.h</td>
+///     <td> Rail data structure CRail.</td>
+/// </table>
+/// </center>
+///
+
