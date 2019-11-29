@@ -61,7 +61,9 @@ struct CSearchRequest{
 
   bool m_bDiscard = false; ///< Discard result.
 
-  CSearchRequest(const CTourneyDesc& t, int w, int h); ///< Constructor.
+  int m_nSeed = 0; ///< PRNG seed.
+
+  CSearchRequest(const CTourneyDesc& t, int w, int h, int s); ///< Constructor.
   CSearchRequest(); ///< Default constructor.
 }; //CSearchRequest
 

@@ -58,13 +58,14 @@
 class CWarnsdorf{
   private:    
     CRandom m_cRandom; ///< PRNG.
+
     int RandomClosedWalk(CBoard& b, int start); ///< Create a closed random walk.
 
     bool GenerateTour(CBoard& b); ///< Generate a knight's tour.
     bool GenerateTourney(CBoard& b); ///< Generate a tourney.
 
   public:
-    CWarnsdorf(); ///< Constructor.
+    CWarnsdorf(int seed); ///< Constructor.
 
     void Generate(CBoard& b, CycleType t); ///< Generate a tour or tourney.
 }; //CWarnsdorf

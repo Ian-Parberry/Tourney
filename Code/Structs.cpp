@@ -52,9 +52,10 @@ CTourneyDesc::CTourneyDesc(){
 /// \param t Tourney descriptor.
 /// \param w Board width.
 /// \param h Board height.
+/// \param s PRNG seed.
 
-CSearchRequest::CSearchRequest(const CTourneyDesc& t, int w, int h):
-  m_cTourneyDesc(t), m_nWidth(w), m_nHeight(h), m_nSize(w*h){
+CSearchRequest::CSearchRequest(const CTourneyDesc& t, int w, int h, int s):
+  m_cTourneyDesc(t), m_nWidth(w), m_nHeight(h), m_nSize(w*h), m_nSeed(s){
 } //constructor
 
 /// The default search request constructor.

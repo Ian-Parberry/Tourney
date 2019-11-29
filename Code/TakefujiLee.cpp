@@ -36,12 +36,11 @@ extern std::atomic_bool g_bFinished; ///< Search termination flag.
 /// Initialize the neural network.
 /// \param w Board width.
 /// \param h Board height.
+/// \param seed PRNG seed.
 
-CTakefujiLee::CTakefujiLee(const int w, const int h):
-  CNeuralNet(w*h), m_nWidth(w), m_nHeight(h), m_nSize(w*h)
+CTakefujiLee::CTakefujiLee(int w, int h, int seed):
+  CNeuralNet(w*h, seed), m_nWidth(w), m_nHeight(h), m_nSize(w*h)
 { 
-  m_cRandom.srand();
-
   for(int srcy=0; srcy<m_nHeight; srcy++)
     for(int srcx=0; srcx<m_nWidth; srcx++){
       const int src = srcy*m_nWidth + srcx;

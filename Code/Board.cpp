@@ -151,6 +151,9 @@ bool CBoard::RailSpansCycles(CRail& r, int id[]){
 /// provided to this function as a call-by-reference parameter. Similarly, we
 /// perform the respective checks when one of the moves from cell \f$i\f$ has
 /// index \f$5\f$, \f$6\f$, or \f$7\f$.
+///
+/// The rail list is permuted into random order before returning.
+///
 /// \param rails [out] Rail list.
 
 void CBoard::FindRails(std::vector<CRail>& rails){
@@ -238,8 +241,9 @@ void CBoard::Shatter(){
 void CBoard::Blur(){
   MakeDirected(); //need a directed board
   
-  for(int i=0; i<11; i++) //shatter many times
+  for(int i=0; i<16; i++) //shatter many times
     Shatter();
+
   for(int i=0; i<8; i++) //hopefully one of these joins will stick
     Join();
   

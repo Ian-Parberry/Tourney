@@ -52,30 +52,31 @@ void CSearchThread::Generate(CSearchRequest& request){
   const int h = request.m_nHeight;
   const int n = request.m_nSize;
 
-  CBoard* pBoard = new CBoard(w, h);
+  CBoard* pBoard = new CBoard(w, h); //pointer to chessboard
 
-  const GeneratorType gentype = request.m_cTourneyDesc.m_eGenerator;
-  const CycleType cycletype = request.m_cTourneyDesc.m_eCycle;
-  bool blur = request.m_cTourneyDesc.m_bBlur; 
+  const GeneratorType gentype = request.m_cTourneyDesc.m_eGenerator; //generator
+  const CycleType cycletype = request.m_cTourneyDesc.m_eCycle; //tour or tourney
+  const bool blur = request.m_cTourneyDesc.m_bBlur; //whether to blur
+  const int seed = request.m_nSeed; //PRNG seed
  
   switch(gentype){
     case GeneratorType::Warnsdorf:
-      CWarnsdorf().Generate(*pBoard, cycletype);
+      CWarnsdorf(seed).Generate(*pBoard, cycletype);
       break; 
 
     case GeneratorType::TakefujiLee:
-      CTakefujiLee(w, h).Generate(*pBoard);
+      CTakefujiLee(w, h, seed).Generate(*pBoard); //can only generate tourneys
       break; 
 
     case GeneratorType::DivideAndConquer: 
       CDivideAndConquer().Generate(*pBoard, cycletype);
       break;
 
-    case GeneratorType::ConcentricBraid:
+    case GeneratorType::ConcentricBraid: //can only generate tourneys
       CConcentricBraid().Generate(*pBoard);
   } //switch
 
-  //post-process tourney generated
+  //post-processing tourney
 
   if(cycletype == CycleType::TourFromTourney) //make tour from tourney
     pBoard->Join();

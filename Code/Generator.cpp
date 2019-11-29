@@ -90,7 +90,7 @@ void CGenerator::Generate(const CTourneyDesc& t, int nThreads){
 
   else{ //need multithreaded search
     for(int i=0; i<nThreads; i++) //queue up search requests
-      m_cSearchRequest.push(CSearchRequest(t, m_nWidth, m_nHeight));  
+      m_cSearchRequest.push(CSearchRequest(t, m_nWidth, m_nHeight, ::rand()));  
   
     for(int i=0; i<nThreads; i++) //launch the search threads
       m_vecThreadList.push_back(std::thread((CSearchThread())));
@@ -150,7 +150,7 @@ void CGenerator::Measure(const CTourneyDesc& t, int nThreads, int n){
   //queue up search requests
 
   for(int i=0; i<n; i++){
-    CSearchRequest request(t, m_nWidth, m_nHeight);
+    CSearchRequest request(t, m_nWidth, m_nHeight, ::rand());
     request.m_bDiscard = true; //we're measuring stats, so throw them away
     m_cSearchRequest.push(request); //submit request
   } //for
@@ -288,7 +288,7 @@ void CGenerator::Time(const CTourneyDesc& t, int nThreads, int n){
   //queue up search requests
 
   for(int i=0; i<n; i++){
-    CSearchRequest request(t, m_nWidth, m_nHeight);
+    CSearchRequest request(t, m_nWidth, m_nHeight, ::rand());
     request.m_bDiscard = true;
     m_cSearchRequest.push(request);
   } //for

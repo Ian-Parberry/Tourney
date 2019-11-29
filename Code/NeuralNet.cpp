@@ -80,8 +80,11 @@ void CNeuron::SetOutput(bool b){
 /// Allocate space for and initialize the vertex list by calling 
 /// CGraph constructor to do the actual work.
 /// \param n Number of vertices.
+/// \param seed PRNG seed.
 
-CNeuralNet::CNeuralNet(const unsigned int n): CGraph(n){
+CNeuralNet::CNeuralNet(unsigned  n, int seed): CGraph(n){
+  ::srand(seed); //seed the default PRNG
+  m_cRandom.srand(); //seed our PRNG
 } //constructor
 
 /// This is the equivalent of CGraph::InsertEdge for CNeuralNet.
@@ -93,7 +96,7 @@ CNeuralNet::CNeuralNet(const unsigned int n): CGraph(n){
 /// \param i The vertex at one end of the edge to be inserted.
 /// \param j The vertex at the other end of the edge to be inserted.
 
-void CNeuralNet::InsertNeuron(const unsigned i, const unsigned j){
+void CNeuralNet::InsertNeuron(unsigned i, unsigned j){
   if(i >= m_nNumVerts || j >= m_nNumVerts || i == j)return; //bail out
 
   CVertex* p0 = &m_pVertexList[i]; //first vertex

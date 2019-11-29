@@ -61,7 +61,7 @@ class CTakefujiLee: public CNeuralNet{
     void GraphToBoard(CBoard& b); ///< Convert graph to board.
 
   public:
-    CTakefujiLee(const int w, const int h); ///< Constructor.
+    CTakefujiLee(int w, int h, int seed); ///< Constructor.
 
     void Generate(CBoard& b); ///< Generate a tourney.
 }; //CTakefujiLee

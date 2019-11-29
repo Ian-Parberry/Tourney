@@ -63,8 +63,8 @@ class CNeuron: public CEdge{
 
 class CNeuralNet: public CGraph{
   public:
-    CNeuralNet(const unsigned int n); ///< Constructor.
-    void InsertNeuron(const unsigned i, const unsigned j); ///< Insert a neuron.
+    CNeuralNet(unsigned n, int seed); ///< Constructor.
+    void InsertNeuron(unsigned i, unsigned j); ///< Insert a neuron.
 }; //CNeuralNet
 
 #endif

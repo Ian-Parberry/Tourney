@@ -31,8 +31,9 @@ extern MoveDeltas g_vecDeltas; ///< Move deltas for all possible knight's moves.
 
 /// The default constructor seeds the PRNG.
 
-CWarnsdorf::CWarnsdorf(){
-  m_cRandom.srand();
+CWarnsdorf::CWarnsdorf(int seed){
+  ::srand(seed); //seed the default PRNG
+  m_cRandom.srand(); //seed our PRNG
 } //constructor
 
 /// Attempt to generate a random knight's tour.
