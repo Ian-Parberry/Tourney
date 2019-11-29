@@ -144,6 +144,7 @@
     <ClCompile Include="Code\Warnsdorf.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Knight%27s Tours\Search\Code\resource.h" />
     <ClInclude Include="Code\BaseBoard.h" />
     <ClInclude Include="Code\Board.h" />
     <ClInclude Include="Code\ConcentricBraid.h" />
@@ -166,6 +167,12 @@
     <ClInclude Include="Code\Tile.h" />
     <ClInclude Include="Code\Timer.h" />
     <ClInclude Include="Code\Warnsdorf.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\Knight%27s Tours\Search\Generate.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\Knight%27s Tours\Search\Code\tourneygen.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
