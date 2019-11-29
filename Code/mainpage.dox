@@ -8,21 +8,20 @@
 /// knight's tours", by Ian Parberry. It will perform three types of task based
 /// on the algorithms described there.
 ///
-/// 1. Generation of tourneys, which are saved in TeX format for inclusion
-/// in a paper.
+/// 1. Generation of tourneys, which are saved in SVG and text format.
 ///
-/// 2. Timing (elapsed time and CPU time) on multiple samples for a range of
-/// board sizes .
+/// 2. Timing (elapsed and CPU time) on multiple samples for a range of
+/// board sizes.
 ///
 /// 3. Measurement of  single-move and double-move frequencies on multiple
 /// samples for a single board size.
 ///
 /// The code is multi-threaded and is currently set to use one less than the
-/// maximum number of concurrent threads on the hardware on which is is run
-/// (to ensure that there is a thread left for the user on long runs). It is
-/// written in C++ using the C++ standard library. There are about 5,300 lines
-/// of source code, 3,400 lines not counting comment blocks, and 2,200 lines
-/// not counting comment blocks and blank lines.
+/// maximum number of concurrent threads on the hardware on which it is
+/// executed (to ensure that there is a thread left for the user on long runs).
+/// It is written in C++ using the C++ standard library. There are about 5,300
+/// lines of source code, 3,400 lines not counting comment blocks, and 2,200
+/// lines not counting comment blocks and blank lines.
 ///
 /// Recommended Background
 /// ======================
@@ -89,7 +88,10 @@
 /// the possible responses or 'r' to restart. The first prompt requires you to
 /// enter your task type, *generate*, *time*, or *measure*.
 ///
-/// * **Generate**: A knight's tour or tourney will be saved in SVG format (a
+/// Generate
+/// --------
+///
+/// A knight's tour or tourney will be saved in SVG format (a
 /// vector-graphics image file that can be viewed in a browser) and
 /// as a text file listing the knight's move 0-7 from each cell of a square
 /// chessboard. You will be prompted for the generation algorithm, the tourney
@@ -99,7 +101,10 @@
 ///
 /// \image html run.png
 ///
-/// * **Time**: A The time required to generate a number of knight's tours or
+/// Time
+/// ----
+///
+/// The time required to generate a number of knight's tours or
 /// tourneys of a range of sizes will be saved in a text file. You will be 
 /// prompted for the generation algorithm, the tourney type, whether or not the
 /// board is to be blurred, the number of samples (number of boards generated
@@ -111,7 +116,10 @@
 ///
 /// \image html output-time.png
 ///
-/// * **Measure**: Statistics on the frequency of single and double moves for a
+/// Measure
+/// -------
+///
+/// Statistics on the frequency of single and double moves for a
 /// number of knight's tours or tourneys will be measured and saved in a text
 /// file. You will be prompted for the number of samples (number of boards
 /// generated of each size) and the board size. The name of the text file
@@ -263,7 +271,7 @@
 ///     <td><center><b>Description</b></center></td>
 ///   <tr>
 ///     <td>Board.cpp, Board.h</td>
-///     <td> Blurrable chessboard CBoard</td>
+///     <td> Blurrable chessboard CBoard.</td>
 ///   <tr>
 ///     <td>Graph.cpp, Graph.h</td>
 ///     <td> Graph data structure CGraph, with CVertex and CEdge.</td>
