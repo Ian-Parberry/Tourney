@@ -85,6 +85,11 @@ int main(){
         CycleType cycletype = CycleType::Unknown; //cycle type
         bRestart = ReadCycleType(cycletype); //get the cycle type
 
+        if(gentype == GeneratorType::ConcentricBraid && cycletype == CycleType::Tour){
+          printf("Substituting joined tourney for knight's tour.\n");
+          cycletype = CycleType::TourFromTourney;
+        } //if
+
         if(!bRestart){
           bool blur = false; //blur flag
           bool bRestart = ReadBlur(blur); //get the blur flag
