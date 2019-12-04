@@ -33,7 +33,7 @@
 extern std::atomic_bool g_bFinished; ///< Search termination flag.
 
 /// The function executed by a search thread, which repeatedly pops
-/// a search request from the thread-safe request queue g_cSearchRequest
+/// a search request from the thread-safe request queue m_cSearchRequest
 /// and calls Generate() to perform the requested search.
 /// The thread terminates when the request queue is empty.
 
