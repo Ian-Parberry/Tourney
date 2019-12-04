@@ -50,8 +50,6 @@ class CTakefujiLee: public CNeuralNet{
     int m_nHeight = 0; ///< Board height.
     int m_nSize = 0; ///< Board size.
 
-    CRandom m_cRandom; ///< PRNG.
-
     bool Update(); ///< Update all neurons.
     void GetAdjacentVertices(std::vector<CVertex*>& v, CVertex* p); ///< Get adjacent vertices.
     bool IsStable(); ///< Stability test.
