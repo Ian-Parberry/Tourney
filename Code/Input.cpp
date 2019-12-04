@@ -43,7 +43,7 @@ bool ReadUnsigned(unsigned& n, Parity parity, unsigned lo){
     nerror = false; //no numerical error yet
 
     printf("> "); //prompt user
-    const char* result = fgets(b, sizeof(b), stdin); //get line of text from input
+    const char* result = fgets(b, sizeof(b), stdin); //read a line of text
 
     if(result != nullptr && b[0] == 'r' || b[0] == 'R')
       return true; //'r' means restart
@@ -84,7 +84,7 @@ char ReadCharacter(std::set<char>& s){
     cerror = false; //no numerical error yet
 
     printf("> "); //prompt user
-    const char* result = fgets(b, sizeof(b), stdin); //get a line of text from the input
+    const char* result = fgets(b, sizeof(b), stdin); //read a line of text
 
     if(result != nullptr){
       const int args = sscanf(b, "%c\n", &c); //parse input
@@ -126,21 +126,44 @@ bool ReadGeneratorType(GeneratorType& t){
     finished = true;
 
     std::set<char> s = {'w', 't', 'd', 'c', 'h', 'r'}; //admissible characters
-    const char c = ReadCharacter(s);
+    const char c = ReadCharacter(s); //read admissible character from user
+    
+    //decode character entered by user into a generator type and print response
+    
+    t = GeneratorType::Unknown;
 
     switch(c){
-      case 'w': t = GeneratorType::Warnsdorf; break;
-      case 't': t = GeneratorType::TakefujiLee; break;
-      case 'd': t = GeneratorType::DivideAndConquer; break;
-      case 'c': t = GeneratorType::ConcentricBraid; break;
+      case 'w': 
+        t = GeneratorType::Warnsdorf; 
+        printf("Warnsdorf's algorithm selected.\n");
+        break;
 
-      case 'h': PrintGeneratorTypeHelp(); finished = false; break;
+      case 't': 
+        t = GeneratorType::TakefujiLee; 
+        printf("Takefuji-Lee neural network algorithm selected.\n");
+        break;
+
+      case 'd':
+        t = GeneratorType::DivideAndConquer;
+        printf("Divide-and-conquer algorithm selected.\n");
+        break;
+
+      case 'c': 
+        t = GeneratorType::ConcentricBraid; 
+        printf("Concentric braid algorithm selected.\n");
+        break;
+
+      case 'h': 
+        PrintGeneratorTypeHelp();
+        finished = false;
+        break;
+
       case 'r': return true; //restart
     } //switch
   } //if
 
   return false; //don't restart
-} //ReadTourType
+} //ReadGeneratorType
 
 /// Print keyboard mapping for cycle type.
 
@@ -160,18 +183,35 @@ bool ReadCycleType(CycleType& t){
   while(!finished){
     printf("Enter tourney type [tyj], h for help, r to restart.\n");
     finished = true;
+
+    std::set<char> s = {'t', 'y', 'j', 'h', 'r'}; //admissible characters
+    const char c = ReadCharacter(s); //read admissible character from user
+
+    //decode character entered by user into a cycle type and print response
   
     t = CycleType::Unknown;
 
-    std::set<char> s = {'t', 'y', 'j', 'h', 'r'}; //admissible characters
-    const char c = ReadCharacter(s); 
-
     switch(c){
-      case 't': t = CycleType::Tour; break;
-      case 'y': t = CycleType::Tourney; break;
-      case 'j': t = CycleType::TourFromTourney; break;
+      case 't': 
+        t = CycleType::Tour; 
+        printf("Knight's tour selected.\n");
+        break;
 
-      case 'h': PrintCycleTypeHelp(); finished = false; break;
+      case 'y':
+        t = CycleType::Tourney;
+        printf("Tourney selected.\n");
+        break;
+
+      case 'j':
+        t = CycleType::TourFromTourney; 
+        printf("Joined tourney selected.\n");
+        break;
+
+      case 'h': 
+        PrintCycleTypeHelp(); 
+        finished = false; 
+        break;
+
       case 'r': return true; //restart
     } //switch
   } //if
@@ -184,13 +224,22 @@ bool ReadCycleType(CycleType& t){
 /// \return true If the user wants to restart instead.
 
 bool ReadBlur(bool& blurred){
-  printf("Blurred [y/n]?\n");
+  printf("Blurred [y/n], r to restart?\n");
 
   std::set<char> s = {'y', 'n', 'r'}; //admissible characters
-  const char c = ReadCharacter(s); 
-  blurred = c == 'y';
+  const char c = ReadCharacter(s); //read admissible character from user
+  blurred = c == 'y'; //yes to blur
 
-  return c == 'r';
+  const bool bRestart = c == 'r'; //r to restart
+
+  if(bRestart){
+    if(blurred)
+      printf("Tourney(s) will be blurred.\n");
+    else
+      printf("Tourney(s) will not be blurred.\n");
+  } //if
+
+  return bRestart; 
 } //ReadBlur
 
 /// Print keyboard mapping for tasks.
@@ -213,16 +262,33 @@ bool ReadTask(Task& t){
     finished = true;
 
     std::set<char> s = {'g', 'm', 't', 'h', 'q'}; //admissible characters
-    const char cTask = ReadCharacter(s); 
+    const char cTask = ReadCharacter(s); //read admissible character from user
+
+    //decode character entered by user into a task and print response
 
     t = Task::Unknown;
 
     switch(cTask){
-      case 'g': t = Task::Generate; break;
-      case 'm': t = Task::Measure; break;
-      case 't': t = Task::Time; break;
+      case 'g': 
+        t = Task::Generate; 
+        printf("Generating a single tourney.\n");
+        break;
 
-      case 'h': PrintTaskHelp(); finished = false; break;
+      case 'm':
+        t = Task::Measure;
+        printf("Measuring single and double move statistics.\n");
+        break;
+
+      case 't':
+        t = Task::Time;
+        printf("Timing the generation of tourneys.\n");
+        break;
+
+      case 'h': 
+        PrintTaskHelp(); 
+        finished = false; 
+        break;
+
       case 'q': return true; //quit
     } //switch
   } //while
