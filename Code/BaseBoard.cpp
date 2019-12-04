@@ -619,31 +619,46 @@ void CBaseBoard::SaveToSVG(std::string& name){
     const float cellsize0 = 32; //cell size before scaling
     const float cellsize = scale*cellsize0; //scale the cell size
     const float spotsize = cellsize/6.0f; //spot size
+    const float strokewidth = 2.0f*scale;
 
-    fprintf(output, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
-    fprintf(output, "<svg width=\"%0.f\" height=\"%0.f\" viewBox=\"-4 -4 %0.f %0.f\" xmlns=\"http://www.w3.org/2000/svg\">\n",
-      w*cellsize + 8.0f, h*cellsize + 8.0f, w*cellsize + 8.0f, h*cellsize + 8.0f);
+    fprintf(output, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
-    fprintf(output, "\n");
+    const unsigned sw = (unsigned)std::ceil(w*cellsize); //screen width
+    const unsigned sh = (unsigned)std::ceil(h*cellsize); //screen height
+
+    fprintf(output, "<svg width=\"%u\" height=\"%u\" ", sw + 8, sh + 8);
+    fprintf(output, "viewBox=\"-4 -4 %u %u\" ", sw + 8, sh + 8);
+    fprintf(output, "xmlns=\"http://www.w3.org/2000/svg\">");
+    fprintf(output, "<style>");
+    fprintf(output, "circle{fill:black;r:%0.1f}", spotsize);	
+    fprintf(output, "line{stroke:black;stroke-width:%0.1f}", 2.0f*strokewidth);
+    fprintf(output, "</style>");
 
     //board
 
-    const float strokewidth = 2.0f*scale;
+    fprintf(output, "<rect width=\"%u\" height=\"%u\" ", sw, sh);
+    fprintf(output, "style=\"fill:white;stroke:black;stroke-width:%s\"/>",
+      NumString(strokewidth).c_str());
 
-    fprintf(output, "  <rect width=\"%0.1f\" height=\"%0.1f\" style=\"fill:rgb(255,255,255);stroke-width:%0.2f;stroke:rgb(0,0,0)\" />\n",
-      w*cellsize, h*cellsize, strokewidth);
-
-    fprintf(output, "\n");
+    const std::string bds = "style=\"stroke-width:" + NumString(strokewidth) + "\"";
     
     for(int i=1; i<h; i++)
-      fprintf(output, "  <line x1=\"%0.2f\" y1=\"%0.2f\" x2=\"%0.2f\" y2=\"%0.2f\" style=\"stroke:rgb(0,0,0);stroke-width:%0.4f\"/>\n",
-        0.0f, (float)i*cellsize,  (float)w*cellsize, (float)i*cellsize, strokewidth);
+      fprintf(output, "<line x1=\"0\" y1=\"%s\" x2=\"%s\" y2=\"%s\" %s/>",
+        NumString((float)i*cellsize).c_str(),
+        NumString((float)w*cellsize).c_str(), 
+        NumString((float)i*cellsize).c_str(), 
+        bds.c_str()
+      );
     
     for(int i=1; i<w; i++)
-      fprintf(output, "  <line x1=\"%0.2f\" y1=\"%0.2f\" x2=\"%0.2f\" y2=\"%0.2f\" style=\"stroke:rgb(0,0,0);stroke-width:%0.4f\"/>\n",
-        (float)i*cellsize, 0.0f, (float)i*cellsize, (float)h*cellsize, strokewidth);
+      fprintf(output, "<line x1=\"%s\" y1=\"0\" x2=\"%s\" y2=\"%s\" %s/>",
+        NumString((float)i*cellsize).c_str(), 
+        NumString((float)i*cellsize).c_str(), 
+        NumString((float)h*cellsize).c_str(), 
+        bds.c_str()
+      );
 
-    fprintf(output, "\n");
+    fprintf(output, "");
 
     //knight's tour
 
@@ -653,18 +668,19 @@ void CBaseBoard::SaveToSVG(std::string& name){
         const int dest = m_nMove[src];
   
         if(0 <= dest && dest < n){
-          const int srcx = i;
-          const int srcy = h - 1 - j;
+          const float srcx = (i + 0.5f)*cellsize;
+          const float srcy = (h - 1 - j + 0.5f)*cellsize;
   
-          const int destx = dest%w;
-          const int desty = h - 1 - dest/w;
+          const float destx = (dest%w + 0.5f)*cellsize;
+          const float desty = (h - 1 - std::floor((float)dest/w) + 0.5f)*cellsize;
 
-          fprintf(output, "  <line x1=\"%0.2f\" y1=\"%0.2f\" x2=\"%0.2f\" y2=\"%0.2f\" style=\"stroke:rgb(0,0,0);stroke-width:%0.2f\"/>\n",
-            (srcx + 0.5f)*cellsize, (srcy + 0.5f)*cellsize,
-            (destx + 0.5f)*cellsize, (desty + 0.5f)*cellsize, 4.0f*scale);
+          fprintf(output, "<line x1=\"%s\" y1=\"%s\" x2=\"%s\" y2=\"%s\"/>",
+            NumString(srcx).c_str(),  NumString(srcy).c_str(),
+            NumString(destx).c_str(), NumString(desty).c_str()
+          );
 
-          fprintf(output, "  <circle cx=\"%0.2f\" cy=\"%0.2f\" r=\"%0.2f\" stroke=\"black\" stroke-width=\"0\" fill=\"black\" />\n",
-            (srcx + 0.5f)*cellsize, (srcy + 0.5f)*cellsize, spotsize);
+          fprintf(output, "<circle cx=\"%s\" cy=\"%s\"/>",
+            NumString(srcx).c_str(), NumString(srcy).c_str());
         } //if
       } //for
 
