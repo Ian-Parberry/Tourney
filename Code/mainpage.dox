@@ -92,7 +92,7 @@
 /// --------
 ///
 /// A knight's tour or tourney will be saved in SVG format (a
-/// vector-graphics image file that can be viewed in a browser) and
+/// vector graphics image file that can be viewed in a browser) and
 /// as a text file listing the knight's move 0-7 from each cell of a square
 /// chessboard. You will be prompted for the generation algorithm, the tourney
 /// type, whether or not the board is to be blurred, and the board size. The 
