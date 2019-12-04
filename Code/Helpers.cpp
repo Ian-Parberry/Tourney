@@ -97,3 +97,28 @@ std::string MakeFileNameBase(const CTourneyDesc& t, int w){
   return s;
 } //MakeFileNameBase
 
+/// Make a compact string representation of a floating point number, that is,
+/// if it's close enough to an integer, then don't use decimal point notation,
+/// otherwise use 1 digit after the decimal point. This saves space when
+/// rendering massive knight's tours to an SVG file. The floating point number
+/// is assumed to be positive, otherwise the null string is returned.
+/// \param x The number to be processed.
+/// \return Compact string form of x.
+
+std::string NumString(float x){
+  std::string s; //return string
+  if(x < 0)return s;
+
+  const unsigned intpart =  (unsigned)std::floor(x);
+  const float fracpart = x - intpart;
+
+  if(fracpart < 0.1f)
+    s = std::to_string(intpart);
+
+  else{
+    const unsigned intfracpart = (unsigned)std::round(fracpart*10.0f);
+    s = std::to_string(intpart) + "." + std::to_string(intfracpart);
+  } //else
+
+  return s;
+} //NumString

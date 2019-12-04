@@ -41,5 +41,6 @@ using MoveDelta = std::pair<int, int>; ///< Move delta for a knight's move.
 using MoveDeltas = std::vector<MoveDelta>; ///< Move deltas for knight's moves.
 
 std::string MakeFileNameBase(const CTourneyDesc& t, int w=-1); ///< Make file name base.
+std::string NumString(float x); ///< Make string from number.
 
 #endif
