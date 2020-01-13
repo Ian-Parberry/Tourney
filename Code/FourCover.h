@@ -1,9 +1,9 @@
-/// \file Task.h
-/// \brief Header for task functions.
+/// \file FourCover.h
+/// \brief Header for the four-cover tourney generator CFourCover.
 
 // MIT License
 //
-// Copyright (c) 2019 Ian Parberry
+// Copyright (c) 2020 Ian Parberry
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -23,12 +23,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#ifndef __Task__
-#define __Task__
+#ifndef __FourCover__
+#define __FourCover__
 
-#include "Defines.h"
+#include "Board.h"
 
-bool StartTask(Task task, const CTourneyDesc& t,
-  int nNumThreads); ///< Start a task.
+/// \brief Four-cover tourney generator.
+/// 
+/// A four-cover tourney consists of cycles of length four.
+
+class CFourCover{
+  private:
+    void Generate4Cycle(CBoard& b, int v[4]); ///< Generate a 4-cycle.
+
+  public:
+    void Generate(CBoard& b); ///< Generate a four-cover tourney.
+}; //CFourCover
 
 #endif

@@ -1,5 +1,5 @@
 /// \file Defines.h
-/// \brief Defines and enumerated types.
+/// \brief Defines, enumerated types, and typedefs.
 
 // MIT License
 //
@@ -35,7 +35,7 @@
 /////////////////////////////////////////////////////////////////////////
 
 #if !defined(_MSC_VER) //*nix 
-  typedef uint64_t UINT64;
+  typedef uint64_t UINT64; ///< Typedef of UINT64 for *NIX.
 #endif
 
 /////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,8 @@
 /// Tourney generation algorithm.
 
 enum class GeneratorType{
-  Unknown, Warnsdorf, TakefujiLee, DivideAndConquer, ConcentricBraid
+  Unknown, Warnsdorff, TakefujiLee, DivideAndConquer, ConcentricBraid,
+  FourCover
 }; //GeneratorType
 
 /////////////////////////////////////////////////////////////////////////
@@ -77,5 +78,9 @@ enum class Task{
 enum class Parity{
   DontCare, Even, Odd
 }; //Task
+
+/////////////////////////////////////////////////////////////////////////
+
+typedef unsigned int UINT; ///< Abbreviation for unsigned integer.
 
 #endif

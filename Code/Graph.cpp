@@ -35,7 +35,7 @@
 /// \param p1 Pointer to vertex incident with edge.
 /// \param index Index of edge.
 
-CEdge::CEdge(CVertex* p0, CVertex* p1, unsigned int index):
+CEdge::CEdge(CVertex* p0, CVertex* p1, UINT index):
   m_pVertex0(p0), m_pVertex1(p1), m_nIndex(index){
 } //constructor
 
@@ -53,7 +53,7 @@ CVertex* CEdge::GetNextVertex(CVertex* p){
 /// Reader function for the index.
 /// \return The index of this edge in the edge list.
 
-unsigned int CEdge::GetIndex(){
+UINT CEdge::GetIndex(){
   return m_nIndex;
 } //GetIndex
 
@@ -75,7 +75,7 @@ bool CEdge::Marked(){
 /// \param i0 [out] Index of a vertex incident with this edge.
 /// \param i1 [out] Index of the other vertex incident with this edge.
 
-void CEdge::GetVertexIndices(unsigned& i0, unsigned& i1){
+void CEdge::GetVertexIndices(UINT& i0, UINT& i1){
   i0 = m_pVertex0->GetIndex();
   i1 = m_pVertex1->GetIndex();
 } //GetVertexIndices
@@ -97,14 +97,14 @@ void CVertex::InsertAdjacency(CEdge* pEdge){
 /// Set index.
 /// \param n The index of this vertex in the vertex list.
 
-void CVertex::SetIndex(const unsigned int n){
+void CVertex::SetIndex(const UINT n){
   m_nIndex = n;
 } //SetIndex
 
 /// Reader function for the index.
 /// \return The index of this vertex in the vertex vertex.
 
-unsigned int CVertex::GetIndex(){
+UINT CVertex::GetIndex(){
   return m_nIndex;
 } //GetIndex
 
@@ -142,12 +142,12 @@ size_t CVertex::GetDegree(){
 /// Allocate space for and initialize the vertex list.
 /// \param n Number of vertices.
 
-CGraph::CGraph(const unsigned int n):
+CGraph::CGraph(const UINT n):
   m_nNumVerts(n)
 {
   m_pVertexList = new CVertex[n];
 
-  for(unsigned int i=0; i<n; i++)
+  for(UINT i=0; i<n; i++)
     m_pVertexList[i].SetIndex(i);
 
   m_cRandom.srand();
@@ -169,7 +169,7 @@ CGraph::~CGraph(){
 /// \param i The vertex at one end of the edge to be inserted.
 /// \param j The vertex at the other end of the edge to be inserted.
 
-void CGraph::InsertEdge(const unsigned i, const unsigned j){
+void CGraph::InsertEdge(const UINT i, const UINT j){
   if(i >= m_nNumVerts || j >= m_nNumVerts || i == j)return; //bail out
 
   CVertex* p0 = &m_pVertexList[i];
@@ -182,69 +182,41 @@ void CGraph::InsertEdge(const unsigned i, const unsigned j){
   p1->InsertAdjacency(pEdge); //append edge to adjacency list of second vertex
 } //InsertEdge
 
-/// Recursive function for finding a depth-first spanning tree (DFST) of 
-/// unvisited vertices starting at a particular vertex. This function appends
-/// the new edges to the result vector.
-/// \param [in, out] result A vector of indices of edges in a DFST.
-/// \param p Pointer to start vertex, defaults to NULL, meaning vertex 0.
+/// Find a random breadth-first spanning forest (BFSF).
+/// \param [out] result A vector of indices of the edges in a BFSF.
 
-void CGraph::DFST(std::vector<unsigned int>& result, CVertex* p){
-  if(p == nullptr) //top of the recursion
-    p = &m_pVertexList[0]; //first vertex
+void CGraph::BFSF(std::vector<UINT>& result){
+  for(UINT i=0; i<m_nNumVerts; i++)
+    if(!m_pVertexList[i].Marked()){
+      m_qBFSQueue.push(&m_pVertexList[i]);
+      m_pVertexList[i].Mark();
 
-  p->Mark(); //mark current vertex visited
+      while(!m_qBFSQueue.empty()){
+        CVertex* current = m_qBFSQueue.front(); //get next queue element
+        m_qBFSQueue.pop(); //remove from queue
 
-  std::vector<CEdge*>* pAdjacencyList = p->GetAdjacencyList();
+        std::vector<CEdge*>* pAdjList = current->GetAdjacencyList(); //shorthand
 
-  //random permutation of adjacency list
+        //random permutation of adjacency list
 
-  const unsigned n = (unsigned)pAdjacencyList->size();
-  auto& adjacencylist = *pAdjacencyList;
-  for(unsigned i=0; i<n-1; i++)
-    std::swap(adjacencylist[i], adjacencylist[m_cRandom.randn(i, n-1)]);
-
-  for(CEdge* pEdge: adjacencylist){ //for each edge incident with current vertex
-    CVertex* next = pEdge->GetNextVertex(p); //vertex at other end of edge
-
-    if(next != nullptr && !next->Marked()){ //if next vertex is unvisited
-      result.push_back(pEdge->GetIndex()); //append edge index to end of result
-      DFST(result, next); //recurse on next vertex 
-    } //if
-  } //for
-} //DFST
-
-/// Find a breadth-first spanning tree (BFST) starting at the first vertex.
-/// \param [out] result A vector of indices of edges in a BFST.
-
-void CGraph::BFST(std::vector<unsigned int>& result){
-  m_qBFSQueue.push(&m_pVertexList[0]);
-  m_pVertexList[0].Mark();
-
-  while(!m_qBFSQueue.empty()){
-    CVertex* current = m_qBFSQueue.front(); //get next queue element
-    m_qBFSQueue.pop(); //remove from queue
-
-    std::vector<CEdge*>* pAdjacencyList = current->GetAdjacencyList();
-
-    //random permutation of adjacency list
-    //const int n = (int)pAdjacencyList->size();
-    //auto& adjacencylist = *pAdjacencyList;
-    //for(int i=0; i<n-1; i++)
-    //  std::swap(adjacencylist[i], adjacencylist[m_cRandom.randn(i, n-1)]);
+        const int n = (int)pAdjList->size();
+        auto& adjacencylist = *pAdjList;
+        for(int i=0; i<n-1; i++)
+          std::swap(adjacencylist[i], adjacencylist[m_cRandom.randn(i, n-1)]);
     
-    for(CEdge* pEdge: *pAdjacencyList){ //for each edge incident with current vertex
-      CVertex* next = pEdge->GetNextVertex(current); //vertex at other end of edge
-
-      if(next != nullptr && !next->Marked()){ //if next vertex is unvisited
-        result.push_back(pEdge->GetIndex()); //append edge index to end of result
-        m_qBFSQueue.push(next); //recurse on next vertex 
-        next->Mark();
-      } //if
-    } //for
-  } //while
+        for(CEdge* pEdge: *pAdjList){ //for edges incident with current vertex
+          CVertex* next = pEdge->GetNextVertex(current); //vertex at other end
+          if(next != nullptr && !next->Marked()){ //if next vertex is unvisited
+            result.push_back(pEdge->GetIndex()); //append edge index to  result
+            m_qBFSQueue.push(next); //recurse on next vertex 
+            next->Mark();
+          } //if
+        } //for
+      } //while
+    } //if
 
   //PrintGraph();
-} //BFST
+} //BFSF
 
 /// Print the graph to graph.txt, used to get the example in the paper.
 
@@ -256,7 +228,7 @@ void CGraph::PrintGraph(){
     fprintf_s(output, "%d vertices, %d edges\n", m_nNumVerts, m_nNumEdges);
 
     for(CEdge* p: m_vEdgeList){
-      unsigned int i, j;
+      UINT i, j;
       p->GetVertexIndices(i, j);
       fprintf(output, "(%u, %u)\n", i, j);
     } //for

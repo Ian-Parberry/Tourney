@@ -42,7 +42,7 @@ extern MoveDeltas g_vecDeltas; ///< Move deltas for all possible knight's moves.
 /// \param dest1 Index of cell at the destination end of second move.
 /// \param w Board width.
 
-CRail::CRail(int src0, int dest0, int src1, int dest1, unsigned w):
+CRail::CRail(int src0, int dest0, int src1, int dest1, UINT w):
   m_nSrc0(src0), m_nDest0(dest0), m_nSrc1(src1), m_nDest1(dest1), m_nWidth(w){   
 } //constructor
 

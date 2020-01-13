@@ -32,31 +32,15 @@
 #include "Input.h"
 #include "Generator.h"
 #include "Task.h"
-
-#if !defined(_MSC_VER) //*nix 
-  #include <sys/time.h>
-
-  /// \brief *nix equivalent of the Windows function timeGetTime().
-  ///
-  /// Well, it kinda-sorta is. It will be used to seed a PRNG, so all that
-  /// really matters is that it returns something different each time this
-  /// program is run. It may be slow but we'll only used it a few times
-  /// during initialization.
-  /// \return Number of milliseconds since the start of the current epoch.
-
-  unsigned int timeGetTime(){
-    struct timeval now;
-    gettimeofday(&now, NULL);
-    return now.tv_usec/1000;
-  } //timeGetTime
-#endif
+#include "Helpers.h"
 
 /// \brief Main.
 ///
 /// \return 0 (what could possibly go wrong?)
 
 int main(){
-  const int nNumThreads = std::thread::hardware_concurrency() - 1; //number of threads
+  const int nNumThreads = 
+    std::thread::hardware_concurrency() - 1; //number of threads
  
   srand(timeGetTime()); //we'll use ::rand() later to seed a better PRNG
 
@@ -85,7 +69,10 @@ int main(){
         CycleType cycletype = CycleType::Unknown; //cycle type
         bRestart = ReadCycleType(cycletype); //get the cycle type
 
-        if(gentype == GeneratorType::ConcentricBraid && cycletype == CycleType::Tour){
+        if((gentype == GeneratorType::ConcentricBraid ||
+            gentype == GeneratorType::FourCover) &&
+          cycletype == CycleType::Tour)
+        {
           printf("Substituting joined tourney for knight's tour.\n");
           cycletype = CycleType::TourFromTourney;
         } //if

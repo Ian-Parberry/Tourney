@@ -121,6 +121,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Knight%27s Tours\Search\Code\FourCover.cpp" />
+    <ClCompile Include="..\..\Knight%27s Tours\Search\Code\Warnsdorff.cpp" />
     <ClCompile Include="Code\BaseBoard.cpp" />
     <ClCompile Include="Code\Board.cpp" />
     <ClCompile Include="Code\ConcentricBraid.cpp" />
@@ -141,10 +143,11 @@
     <ClCompile Include="Code\ThreadSafeQueue.cpp" />
     <ClCompile Include="Code\Tile.cpp" />
     <ClCompile Include="Code\Timer.cpp" />
-    <ClCompile Include="Code\Warnsdorf.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Knight%27s Tours\Search\Code\FourCover.h" />
     <ClInclude Include="..\..\Knight%27s Tours\Search\Code\resource.h" />
+    <ClInclude Include="..\..\Knight%27s Tours\Search\Code\Warnsdorff.h" />
     <ClInclude Include="Code\BaseBoard.h" />
     <ClInclude Include="Code\Board.h" />
     <ClInclude Include="Code\ConcentricBraid.h" />
@@ -166,7 +169,6 @@
     <ClInclude Include="Code\ThreadSafeQueue.h" />
     <ClInclude Include="Code\Tile.h" />
     <ClInclude Include="Code\Timer.h" />
-    <ClInclude Include="Code\Warnsdorf.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\Knight%27s Tours\Search\Generate.rc" />

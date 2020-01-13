@@ -40,6 +40,20 @@
   void fopen_s(FILE** stream, const char* name, const char* fmt){
     *stream = fopen(name, fmt);
   } //fopen_s
+
+  #include <sys/time.h>
+
+  /// Well, it kinda-sorta is like the Windows version of timeGetTime(), but
+  /// not really. Since it will be used to seed a PRNG, all that really matters
+  /// is that it returns something different each time is is called. It can be
+  /// slow but hopefully we'll only used it a few times during initialization.
+  /// \return Number of milliseconds since the start of the current epoch.
+
+  UINT timeGetTime(){
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    return now.tv_usec/1000;
+  } //timeGetTime
 #endif
 
 /// \brief Move deltas for all possible knight's moves.
@@ -78,10 +92,11 @@ std::string MakeFileNameBase(const CTourneyDesc& t, int w){
   std::string s = "Error"; //file name string, should never see this default
 
   switch(gentype){ //prefix represents the generator type
-    case GeneratorType::Warnsdorf:        s = "Warnsd"; break;
+    case GeneratorType::Warnsdorff:       s = "Warnsd"; break;
     case GeneratorType::TakefujiLee:      s = "Neural"; break;
     case GeneratorType::DivideAndConquer: s = "Divide"; break;
-    case GeneratorType::ConcentricBraid:  s = "Braid"; break;
+    case GeneratorType::ConcentricBraid:  s = "Braid";  break;
+    case GeneratorType::FourCover:        s = "Cover4"; break;
     case GeneratorType::Unknown:          s = "Unknown"; break;
   } //switch
   
@@ -109,16 +124,44 @@ std::string NumString(float x){
   std::string s; //return string
   if(x < 0)return s;
 
-  const unsigned intpart =  (unsigned)std::floor(x);
+  const UINT intpart =  (UINT)std::floor(x);
   const float fracpart = x - intpart;
 
   if(fracpart < 0.1f)
     s = std::to_string(intpart);
 
   else{
-    const unsigned intfracpart = (unsigned)std::round(fracpart*10.0f);
+    const UINT intfracpart = (UINT)std::round(fracpart*10.0f);
     s = std::to_string(intpart) + "." + std::to_string(intfracpart);
   } //else
 
   return s;
 } //NumString
+
+/// Convert color in HSV format to RGB format. This is a helper function for
+/// generating a pseudorandom color. All parameters are floating point
+/// values in \f$[0,1]\f$.
+/// \param h [in] Hue.
+/// \param s [in] Saturation.
+/// \param v [in] Value.
+/// \param rgb [out] Array of three RGB values.
+
+void HSVtoRGB(float h, float s, float v, float rgb[3]){
+  const UINT i = UINT(6.0f*h);
+
+  const float f = 6.0f*h - i;
+  const float p = v*(1.0f - s);
+  const float q = v*(1.0f - s*f);
+  const float t = v*(1.0f - s*(1.0f - f));
+
+  //set red, green, and blue channels in different ways depending on h
+
+  switch(i%6){ 
+    case 0: rgb[0] = v; rgb[1] = t; rgb[2] = p; break;
+    case 1: rgb[0] = q; rgb[1] = v; rgb[2] = p; break;
+    case 2: rgb[0] = p; rgb[1] = v; rgb[2] = t; break;
+    case 3: rgb[0] = p; rgb[1] = q; rgb[2] = v; break;
+    case 4: rgb[0] = t; rgb[1] = p; rgb[2] = v; break;
+    case 5: rgb[0] = v; rgb[1] = p; rgb[2] = q; break;
+  } //switch
+} //HSVtoRGB

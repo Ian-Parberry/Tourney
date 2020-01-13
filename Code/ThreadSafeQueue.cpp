@@ -64,5 +64,5 @@ template <class data> size_t CThreadSafeQueue<data>::size(){
 
 //explicit template instantiations
 
-template class CThreadSafeQueue<CSearchRequest>; ///< Thread safe queue of requests.
-template class CThreadSafeQueue<CSearchResult>; ///< Thread safe queue of results.
+template class CThreadSafeQueue<CSearchRequest>; ///< Threadable queue of requests.
+template class CThreadSafeQueue<CSearchResult>; ///< Threadable queue of results.

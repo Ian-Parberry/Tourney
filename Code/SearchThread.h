@@ -40,7 +40,7 @@
 
 class CSearchThread: public CSearchThreadQueues{
   private:
-    void Generate(CSearchRequest& request); ///< Generate knight's tour or tourney.
+    void Generate(CSearchRequest& request); ///< Generate knight's tour/tourney.
 
   public:
     void operator()(); ///< The code that gets run by each thread.

@@ -33,7 +33,7 @@
 /// \param p1 Pointer to vertex incident with neuron.
 /// \param index Index of neuron.
 
-CNeuron::CNeuron(CVertex* p0, CVertex* p1, unsigned int index):
+CNeuron::CNeuron(CVertex* p0, CVertex* p1, UINT index):
   CEdge(p0, p1, index){
 } //constructor
 
@@ -82,7 +82,7 @@ void CNeuron::SetOutput(bool b){
 /// \param n Number of vertices.
 /// \param seed PRNG seed.
 
-CNeuralNet::CNeuralNet(unsigned  n, int seed): CGraph(n){
+CNeuralNet::CNeuralNet(UINT  n, int seed): CGraph(n){
   ::srand(seed); //seed the default PRNG
   m_cRandom.srand(); //seed our PRNG
 } //constructor
@@ -96,13 +96,13 @@ CNeuralNet::CNeuralNet(unsigned  n, int seed): CGraph(n){
 /// \param i The vertex at one end of the edge to be inserted.
 /// \param j The vertex at the other end of the edge to be inserted.
 
-void CNeuralNet::InsertNeuron(unsigned i, unsigned j){
+void CNeuralNet::InsertNeuron(UINT i, UINT j){
   if(i >= m_nNumVerts || j >= m_nNumVerts || i == j)return; //bail out
 
   CVertex* p0 = &m_pVertexList[i]; //first vertex
   CVertex* p1 = &m_pVertexList[j]; //second vertex
 
-  CNeuron* pEdge = new CNeuron(p0, p1, m_nNumEdges++); //edge between those vertices
+  CNeuron* pEdge = new CNeuron(p0, p1, m_nNumEdges++); //edge between them
 
   m_vEdgeList.push_back(pEdge); //append edge to edge list
   p0->InsertAdjacency(pEdge); //append edge to adjacency list of first vertex

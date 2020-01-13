@@ -41,22 +41,23 @@
 
 class CBoard: public CBaseBoard{
   private:
-    bool RailSpansCycles(CRail& r, int id[]); ///< Rail spans cycles test.
-
     void FindRails(std::vector<CRail>& rails); ///< Find all rails.
-    void FlipRail(CRail& r); ///< Flip a rail.
+    void Switch(CRail& r); ///< Switch a rail.
 
     bool IsRail(int s0, int d0, int s1, int d1); ///< Rail test.
     bool IsRail(CRail& r); ///< Rail test.
+
+    void Join(); ///< Join cycles to reduce tourney size.
     
   public:
     CBoard(); ///< Constructor.
-    CBoard(unsigned n); ///< Constructor.
-    CBoard(unsigned w, unsigned h); ///< Constructor.
-    CBoard(int move[], unsigned w, unsigned h); ///< Constructor.
+    CBoard(UINT n); ///< Constructor.
+    CBoard(UINT w, UINT h); ///< Constructor.
+    CBoard(int move[], UINT w, UINT h); ///< Constructor.
 
     void Shatter(); ///< Shatter tourneys into more tourneys.
-    void Join(); ///< Join tourneys to get fewer tourneys.
+    void JoinUntilTour(); ///< Join cycles to reduce tourney size.
+
     void Blur(); ///< Blur function.
 }; //CBoard
 

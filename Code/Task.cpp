@@ -36,7 +36,7 @@ std::atomic_bool g_bFinished(false); ///< Search termination flag.
 /// \return true If the user opts to restart instead.
 
 bool StartGenerateTask(const CTourneyDesc& t, int nNumThreads){
-  unsigned n = 0;
+  UINT n = 0;
   printf("Enter board width (even and >= 6).\n");
   bool bRestart = ReadUnsigned(n, Parity::Even, 6);
 
@@ -53,12 +53,12 @@ bool StartGenerateTask(const CTourneyDesc& t, int nNumThreads){
 /// \return true If the user opts to restart instead.
 
 bool StartMeasureTask(const CTourneyDesc& t, int nNumThreads){
-  unsigned n = 0;
+  UINT n = 0;
   printf("Enter board width (even and >= 6).\n");
   bool bRestart = ReadUnsigned(n, Parity::Even, 6);
 
   if(!bRestart){
-    unsigned nSamples = 0;
+    UINT nSamples = 0;
     printf("Enter number of samples.\n");
     bRestart = ReadUnsigned(nSamples, Parity::DontCare, 1);
 
@@ -76,17 +76,17 @@ bool StartMeasureTask(const CTourneyDesc& t, int nNumThreads){
 /// \return true If the user opts to restart instead.
 
 bool StartTimeTask(const CTourneyDesc& t, int nNumThreads){
-  unsigned nSamples = 0;
+  UINT nSamples = 0;
   printf("Enter number of samples.\n");
   bool bRestart = ReadUnsigned(nSamples, Parity::DontCare, 1);
 
   if(!bRestart){
-    unsigned lo = 0; //lower end of the range of sizes to be timed
+    UINT lo = 0; //lower end of the range of sizes to be timed
     printf("Enter lowest board size in range.\n");
     bRestart = ReadUnsigned(lo, Parity::Even, 6);
 
     if(!bRestart){
-      unsigned hi = 0; //upper end of the range of sizes to be timed
+      UINT hi = 0; //upper end of the range of sizes to be timed
       printf("Enter highest board size in range.\n");
       bRestart = ReadUnsigned(hi, Parity::Even, 6);
 
@@ -96,7 +96,7 @@ bool StartTimeTask(const CTourneyDesc& t, int nNumThreads){
       if(!bRestart){ //perform task
         printf("This may take a while");
 
-        for(unsigned n=lo; n<=hi; n+=2){
+        for(UINT n=lo; n<=hi; n+=2){
           CGenerator(n, n).Time(t, nNumThreads, nSamples); //generate
           putchar('.');
         } //for

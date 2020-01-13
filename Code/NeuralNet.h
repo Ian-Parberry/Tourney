@@ -45,7 +45,7 @@ class CNeuron: public CEdge{
     int m_bOutput = false; ///< Neuron output.
 
   public:
-    CNeuron(CVertex* p0, CVertex* p1, unsigned int index); ///< Constructor.
+    CNeuron(CVertex* p0, CVertex* p1, UINT index); ///< Constructor.
 
     int GetState(); ///< Get neuron state.
     bool IsStable(); ///< Stability test.
@@ -63,8 +63,8 @@ class CNeuron: public CEdge{
 
 class CNeuralNet: public CGraph{
   public:
-    CNeuralNet(unsigned n, int seed); ///< Constructor.
-    void InsertNeuron(unsigned i, unsigned j); ///< Insert a neuron.
+    CNeuralNet(UINT n, int seed); ///< Constructor.
+    void InsertNeuron(UINT i, UINT j); ///< Insert a neuron.
 }; //CNeuralNet
 
 #endif

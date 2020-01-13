@@ -33,7 +33,7 @@
 /// \param lo Lower bound for the unsigned integer to be read.
 /// \return true If the user wants to quit instead.
 
-bool ReadUnsigned(unsigned& n, Parity parity, unsigned lo){
+bool ReadUnsigned(UINT& n, Parity parity, UINT lo){
   char b[256]; //buffer for input line
   bool ferror; //format error
   bool nerror; //numerical error
@@ -108,10 +108,11 @@ char ReadCharacter(std::set<char>& s){
 /// Print keyboard mapping for generator.
 
 void PrintGeneratorTypeHelp(){
-  printf("   w: random walk with Warnsdorf's heuristic\n");
+  printf("   w: random walk with Warnsdorff's heuristic\n");
   printf("   t: Takefuji-Lee neural network\n");
   printf("   d: divide-and-conquer\n");
   printf("   c: concentric braid\n");
+  printf("   4: 4-cover\n");
 } //PrintGeneratorTypeHelp
 
 /// Read a character from stdin and decode it into a generator type.
@@ -122,10 +123,10 @@ bool ReadGeneratorType(GeneratorType& t){
   bool finished = false;
 
   while(!finished){
-    printf("Enter generation algorithm [wtdc], h for help, r to restart.\n");
+    printf("Enter generation algorithm [wtdc4], h for help, r to restart.\n");
     finished = true;
 
-    std::set<char> s = {'w', 't', 'd', 'c', 'h', 'r'}; //admissible characters
+    std::set<char> s = {'w', 't', 'd', 'c', 'h', '4', 'r'}; //admissible chars
     const char c = ReadCharacter(s); //read admissible character from user
     
     //decode character entered by user into a generator type and print response
@@ -134,8 +135,8 @@ bool ReadGeneratorType(GeneratorType& t){
 
     switch(c){
       case 'w': 
-        t = GeneratorType::Warnsdorf; 
-        printf("Warnsdorf's algorithm selected.\n");
+        t = GeneratorType::Warnsdorff; 
+        printf("Warnsdorff's algorithm selected.\n");
         break;
 
       case 't': 
@@ -151,6 +152,11 @@ bool ReadGeneratorType(GeneratorType& t){
       case 'c': 
         t = GeneratorType::ConcentricBraid; 
         printf("Concentric braid algorithm selected.\n");
+        break;
+
+      case '4': 
+        t = GeneratorType::FourCover; 
+        printf("Four-cover algorithm selected.\n");
         break;
 
       case 'h': 
@@ -224,7 +230,7 @@ bool ReadCycleType(CycleType& t){
 /// \return true If the user wants to restart instead.
 
 bool ReadBlur(bool& blurred){
-  printf("Blurred [y/n], r to restart?\n");
+  printf("Blurred [yn], r to restart?\n");
 
   std::set<char> s = {'y', 'n', 'r'}; //admissible characters
   const char c = ReadCharacter(s); //read admissible character from user

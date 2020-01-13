@@ -28,7 +28,7 @@
 
 #include "Defines.h"
 
-bool ReadUnsigned(unsigned& n, Parity parity, unsigned lo); ///< Get unsigned int from stdin.
+bool ReadUnsigned(UINT& n, Parity parity, UINT lo); ///< Get UINT from stdin.
 bool ReadGeneratorType(GeneratorType& t); ///< Get the generator type from stdin.
 bool ReadCycleType(CycleType& t); ///< Get the cycle type from stdin.
 bool ReadBlur(bool& blurred); ///< Get blur status from stdin.

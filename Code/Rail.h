@@ -40,18 +40,18 @@
 
 class CRail{
   private:
-    int m_nSrc0 = UNUSED; ///< Index of cell at one end of the first edge.
-    int m_nDest0 = UNUSED; ///< Index of cell at the other end of the first edge.
+    int m_nSrc0 = UNUSED; ///< Index of cell at one end of first edge.
+    int m_nDest0 = UNUSED; ///< Index of cell at the other end of first edge.
   
-    int m_nSrc1 = UNUSED; ///< Index of cell at one end of the second edge.
-    int m_nDest1 = UNUSED; ///< Index of cell at the other end of the second edge.
+    int m_nSrc1 = UNUSED; ///< Index of cell at one end of second edge.
+    int m_nDest1 = UNUSED; ///< Index of cell at the other end of second edge.
 
     int m_nWidth = 0; ///< Width of chessboard.
 
     bool IsKnightMove(int i, int j); ///< Knight's move test.
 
   public:
-    CRail(int src0, int dest0, int src1, int dest1, unsigned w); ///< Constructor.
+    CRail(int src0, int dest0, int src1, int dest1, UINT w); ///< Constructor.
 
     void GetEdge0(int& src, int& dest); ///< Get first edge.
     void GetEdge1(int& src, int& dest); ///< Get second edge.

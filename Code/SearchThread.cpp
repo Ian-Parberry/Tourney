@@ -26,9 +26,10 @@
 #include "SearchThread.h"
 
 #include "TakefujiLee.h"
-#include "Warnsdorf.h"
+#include "Warnsdorff.h"
 #include "DivideAndConquer.h"
 #include "ConcentricBraid.h"
+#include "FourCover.h"
 
 extern std::atomic_bool g_bFinished; ///< Search termination flag.
 
@@ -60,8 +61,8 @@ void CSearchThread::Generate(CSearchRequest& request){
   const int seed = request.m_nSeed; //PRNG seed
  
   switch(gentype){
-    case GeneratorType::Warnsdorf:
-      CWarnsdorf(seed).Generate(*pBoard, cycletype);
+    case GeneratorType::Warnsdorff:
+      CWarnsdorff(seed).Generate(*pBoard, cycletype);
       break; 
 
     case GeneratorType::TakefujiLee:
@@ -74,19 +75,22 @@ void CSearchThread::Generate(CSearchRequest& request){
 
     case GeneratorType::ConcentricBraid: //can only generate tourneys
       CConcentricBraid().Generate(*pBoard);
+
+    case GeneratorType::FourCover: //can only generate tourneys
+      CFourCover().Generate(*pBoard);
   } //switch
 
   //post-processing tourney
 
   if(cycletype == CycleType::TourFromTourney) //make tour from tourney
-    pBoard->Join();
+    pBoard->JoinUntilTour();
 
   if(blur)pBoard->Blur(); //blur
  
   if(request.m_bDiscard){ //report statistics
     CSearchResult result(nullptr, request.m_cTourneyDesc);
 
-    for(int i=0; i<n; i++){
+    for(int i=0; i<n; i++){ //for each cell
       int dest = (*pBoard)[i]; //destination after one move
       int dest2 = (*pBoard)[dest]; //destination after two moves
 

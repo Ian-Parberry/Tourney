@@ -39,8 +39,10 @@
 
 class CSearchThreadQueues{
   protected:
-    static CThreadSafeQueue<CSearchRequest> m_cSearchRequest; ///< Search request queue.
-    static CThreadSafeQueue<CSearchResult> m_cSearchResult; ///< Search result queue.
+    static CThreadSafeQueue<CSearchRequest>
+      m_cSearchRequest; ///< Search request queue.
+    static CThreadSafeQueue<CSearchResult>
+      m_cSearchResult; ///< Search result queue.
 }; //CSearchThreadQueues
 
 #endif

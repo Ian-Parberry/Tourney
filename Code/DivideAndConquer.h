@@ -47,10 +47,10 @@
 
 class CDivideAndConquer: public CTile{
   private:
-    int Split(int left, int right); ///< Split a pair of coordinates nearly in half.
+    int Split(int left, int right); ///< Split coordinates nearly in half.
     void Join(CBoard& b, int midx, int midy); ///< Join 4 sub-boards.
-    void Generate(CBoard& b, CycleType t, const CRect& rect); ///< Generate a sub-board.
-    void GenerateBaseCase(CBoard& b, const CRect& rect); ///< Generate base case.
+    void Generate(CBoard& b, CycleType t, const CRect& rect); ///< Recursion.
+    void GenerateBaseCase(CBoard& b, const CRect& rect); ///< Base of recursion.
 
   public:
     CDivideAndConquer(); ///< Constructor.

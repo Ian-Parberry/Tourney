@@ -52,5 +52,5 @@
 
 //includes for assertions
 
-#define NDEBUG ///< Define to disable asserts.
+//#define NDEBUG ///< Define to disable asserts.
 #include <cassert>

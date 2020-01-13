@@ -43,20 +43,20 @@ class CEdge{
     CVertex* m_pVertex0 = nullptr; ///< Vertex at one end of the edge,
     CVertex* m_pVertex1 = nullptr; ///< Vertex at the other end of the edge.
 
-    unsigned int m_nIndex = 0; ///< Index into edge list.
+    UINT m_nIndex = 0; ///< Index into edge list.
     bool m_bMarked = false; ///< Mark flag.
 
   public:
-    CEdge(CVertex* p0, CVertex* p1, unsigned int index); ///< Constructor.
+    CEdge(CVertex* p0, CVertex* p1, UINT index); ///< Constructor.
 
     CVertex* GetNextVertex(CVertex* p); ///< Get vertex at other end of edge.
 
-    unsigned int GetIndex(); ///< Get index;
+    UINT GetIndex(); ///< Get index;
 
     void Mark(bool b=true); ///< Mark or unmark.
     bool Marked(); ///< Get mark.
 
-    void GetVertexIndices(unsigned& i0, unsigned& i1); ///< Get vertex indices.
+    void GetVertexIndices(UINT& i0, UINT& i1); ///< Get vertex indices.
 }; //CEdge
 
 //////////////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ class CVertex{
   private:
     std::vector<CEdge*> m_vAdjacencyList; ///< Adjacency list.
 
-    unsigned int m_nIndex = 0; ///< Index into vertex list.
+    UINT m_nIndex = 0; ///< Index into vertex list.
     bool m_bMarked = false; ///< Mark flag.
 
   public:
@@ -79,8 +79,8 @@ class CVertex{
 
     void InsertAdjacency(CEdge* pEdge); ///< Add an edge to the edge list.
 
-    void SetIndex(const unsigned int n); ///< Set index.
-    unsigned int GetIndex(); ///< Get index;
+    void SetIndex(const UINT n); ///< Set index.
+    UINT GetIndex(); ///< Get index;
 
     void Mark(bool b=true); ///< Mark or unmark.
     bool Marked(); ///< Get mark.
@@ -102,22 +102,21 @@ class CVertex{
 class CGraph{
   protected:
     std::vector<CEdge*> m_vEdgeList; ///< Edge list.
-    unsigned int m_nNumEdges = 0; ///< Number of edges.
+    UINT m_nNumEdges = 0; ///< Number of edges.
 
     CVertex* m_pVertexList = nullptr; ///< Vertex list.
-    unsigned int m_nNumVerts = 0; ///< Number of vertices.
+    UINT m_nNumVerts = 0; ///< Number of vertices.
 
     std::queue<CVertex*> m_qBFSQueue; ///< Queue for breadth-first search.
 
     CRandom m_cRandom; ///< Random number generator.
     
   public:
-    CGraph(const unsigned int n); ///< Constructor.
+    CGraph(const UINT n); ///< Constructor.
     ~CGraph(); ///< Destructor.
 
-    void InsertEdge(const unsigned i, const unsigned j); ///< Insert an edge.
-    void DFST(std::vector<unsigned>& result, CVertex* p=nullptr); ///< Find depth-first spanning tree.
-    void BFST(std::vector<unsigned>& result); ///< Find breadth-first spanning tree.
+    void InsertEdge(const UINT i, const UINT j); ///< Insert an edge.
+    void BFSF(std::vector<UINT>& result); ///< Breadth-first spanning forest.
 
     void PrintGraph(); ///< Print the graph to a text file.
 }; //CGraph

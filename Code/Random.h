@@ -26,6 +26,8 @@
 #if !defined(__Random__)
 #define __Random__
 
+#include "Defines.h"
+
 /// \brief Pseudorandom number generator (PRNG for short).
 ///
 /// A pseudorandom number generator based on xorshift128. It seeds itself
@@ -35,16 +37,17 @@
 
 class CRandom{
   private: 
-    unsigned m_uState[4] = {0}; ///< Current state.
+    UINT m_uState[4] = {0}; ///< Current state.
 
   public:
     CRandom(); ///< Constructor.
     
     void srand(); ///< Seed the random number generator.
 
-    unsigned randn(); ///< Get a random unsigned integer.
-    unsigned randn(unsigned i, unsigned j); ///< Get random number in \f$[i,j]\f$.
+    UINT randn(); ///< Get a random unsigned integer.
+    UINT randn(UINT i, UINT j); ///< Get random number in \f$[i,j]\f$.
     float randf(); ///< Get a random floating point number.
+    void randclr(UINT rgb[3]); ///< Get a random color.
 }; //CRandom
 
 #endif

@@ -1,5 +1,5 @@
-/// \file Warnsdorf.cpp
-/// \brief Code for Warnsdorf's generator CWarnsdorf.
+/// \file Warnsdorff.cpp
+/// \brief Code for Warnsdorff's generator CWarnsdorff.
 
 // MIT License
 //
@@ -23,15 +23,16 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#include "Warnsdorf.h"
+#include "Warnsdorff.h"
 #include "Defines.h"
 
 extern std::atomic_bool g_bFinished; ///< Search termination flag.
 extern MoveDeltas g_vecDeltas; ///< Move deltas for all possible knight's moves. 
 
 /// The default constructor seeds the PRNG.
+/// \param seed A random number seed.
 
-CWarnsdorf::CWarnsdorf(int seed){
+CWarnsdorff::CWarnsdorff(int seed){
   ::srand(seed); //seed the default PRNG
   m_cRandom.srand(); //seed our PRNG
 } //constructor
@@ -40,7 +41,7 @@ CWarnsdorf::CWarnsdorf(int seed){
 /// \param b [out] Board for generated tour.
 /// \return true if generation is successful.
 
-bool CWarnsdorf::GenerateTour(CBoard& b){
+bool CWarnsdorff::GenerateTour(CBoard& b){
   const int w = b.GetWidth();
   const int n = b.GetSize();
   
@@ -109,7 +110,7 @@ bool CWarnsdorf::GenerateTour(CBoard& b){
       else do{
         const int index = m_cRandom.randn(0, prefcount - 1);
         next = preferred[index]; //pick preferred next move
-      }while(next == target && prefcount > 1); //can't be target unless there's no choice  
+      }while(next == target && prefcount > 1); //can't be target unless no choice  
 
       //move there
 
@@ -133,7 +134,7 @@ bool CWarnsdorf::GenerateTour(CBoard& b){
 /// \param b [in, out] Chessboard.
 /// \return true if generation is successful.
 
-bool CWarnsdorf::GenerateTourney(CBoard& b){
+bool CWarnsdorff::GenerateTourney(CBoard& b){
   const int w = b.GetWidth();
   const int n = b.GetSize();
 
@@ -180,9 +181,10 @@ bool CWarnsdorf::GenerateTourney(CBoard& b){
 
 /// Take a random walk and close it into a cycle at the first opportunity.
 /// \param b [in, out] Chessboard.
-/// \param start Index of cell from which to begin cycle.
+/// \param start Index of the first cell on the walk.
+/// \return Index of the last cell on the walk.
 
-int CWarnsdorf::RandomClosedWalk(CBoard& b, int start){
+int CWarnsdorff::RandomClosedWalk(CBoard& b, int start){
   const int w = b.GetWidth();
   const int n = b.GetSize();
   
@@ -256,11 +258,11 @@ int CWarnsdorf::RandomClosedWalk(CBoard& b, int start){
   return current;
 } //RandomClosedWalk
 
-/// Generate a knight's tour or tourney using Warnsdorf's algorithm.
+/// Generate a knight's tour or tourney using Warnsdorff's algorithm.
 /// \param b [out] Board.
 /// \param t Cycle type. 
 
-void CWarnsdorf::Generate(CBoard& b, CycleType t){
+void CWarnsdorff::Generate(CBoard& b, CycleType t){
   switch(t){
     case CycleType::Tour:
       while(!GenerateTour(b) && !g_bFinished); //generate tour
@@ -272,7 +274,7 @@ void CWarnsdorf::Generate(CBoard& b, CycleType t){
 
     case CycleType::TourFromTourney:
       while(!GenerateTourney(b) && !g_bFinished); //generate tourney
-      b.Join(); //make tour from tourney
+      b.JoinUntilTour(); //make tour from tourney
       break;
   } //switch
 } //Generate

@@ -30,6 +30,7 @@
 #include "Board.h"
 #include "DivideAndConquer.h"
 #include "ConcentricBraid.h"
+#include "FourCover.h"
 
 /// Create a very empty chessboard.
 
@@ -66,7 +67,9 @@ void CGenerator::Generate(const CTourneyDesc& t, int nThreads){
   const GeneratorType gentype = t.m_eGenerator;
   const CycleType cycletype = t.m_eCycle;
 
-  if(gentype == GeneratorType::DivideAndConquer){ //no search necessary
+   //deterministic generators 
+
+  if(gentype == GeneratorType::DivideAndConquer){ 
     CBoard b(m_nWidth, m_nHeight); //board for the tour
     CDivideAndConquer().Generate(b, cycletype); //generate it
     if(t.m_bBlur)b.Blur(); //blur if necessary
@@ -77,10 +80,10 @@ void CGenerator::Generate(const CTourneyDesc& t, int nThreads){
     b.SaveToSVG(s); //save to SVG file
   } //if
 
-  else if(gentype == GeneratorType::ConcentricBraid){ //no search necessary
+  else if(gentype == GeneratorType::ConcentricBraid){ 
     CBoard b(m_nWidth, m_nHeight); //board for the tour
     CConcentricBraid().Generate(b); //generate it
-    if(cycletype == CycleType::TourFromTourney)b.Join(); //make tour if required
+    if(cycletype == CycleType::TourFromTourney)b.JoinUntilTour(); //make tour
     if(t.m_bBlur)b.Blur(); //blur if necessary
 
     std::string s = MakeFileNameBase(t, b.GetWidth()); //save file name
@@ -88,7 +91,20 @@ void CGenerator::Generate(const CTourneyDesc& t, int nThreads){
     b.SaveToSVG(s); //save to SVG file
   } //if
 
-  else{ //need multithreaded search
+  else if(gentype == GeneratorType::FourCover){
+    CBoard b(m_nWidth, m_nHeight); //board for the tour
+    CFourCover().Generate(b); //generate it
+    if(cycletype == CycleType::TourFromTourney)b.JoinUntilTour(); //make tour
+    if(t.m_bBlur)b.Blur(); //blur if necessary
+
+    std::string s = MakeFileNameBase(t, b.GetWidth()); //save file name
+    b.Save(s); //save to text file
+    b.SaveToSVG(s); //save to SVG file
+  } //if
+
+  //probabilistic generators
+
+  else{ 
     for(int i=0; i<nThreads; i++) //queue up search requests
       m_cSearchRequest.push(CSearchRequest(t, m_nWidth, m_nHeight, ::rand()));  
   

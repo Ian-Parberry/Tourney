@@ -27,6 +27,7 @@
 
 #include "Random.h"
 #include "Includes.h"
+#include "Helpers.h"
 
 CRandom::CRandom(){ 
 } //constructor
@@ -37,17 +38,16 @@ CRandom::CRandom(){
 
 void CRandom::srand(){ 
   for(int i=0; i<4; i++)
-    m_uState[i] = ::rand();
+    m_uState[i] = (::rand() << 16)|::rand(); //32-bit kluge (Knuth would cringe)
 } //srand
 
-/// Generate a pseudorandom unsigned integer using xorshift128.
-/// This is the one that does the actual work here: The other
-/// psuedorandom generation functions rely on this one.
-/// Algorithm snarfed from the interwebs.
+/// Generate a pseudorandom unsigned integer using xorshift128. This is the one
+/// that does the actual work here: The other pseudorandom generation functions
+/// rely on this one. Algorithm snarfed from the interwebs.
 /// \return A pseudorandom unsigned integer.
 
-unsigned CRandom::randn(){ 
-	unsigned s = m_uState[3];
+UINT CRandom::randn(){ 
+	UINT s = m_uState[3];
 
 	s ^= s << 11;
 	s ^= s >> 8;
@@ -64,20 +64,40 @@ unsigned CRandom::randn(){
 	return s;
 } //randn
 
-/// Generate a pseudorandom unsigned integer within a given range.
+/// Generate a pseudorandom unsigned integer within a range.
 /// \param i Bottom of range.
 /// \param j Top of range.
 /// \return A random positive integer r such that i \f$\leq\f$ r \f$\leq\f$ j.
 
-unsigned CRandom::randn(unsigned i, unsigned j){  
+UINT CRandom::randn(UINT i, UINT j){  
   return randn()%(j - i + 1) + i;
 } //randn
 
-/// Generate a pseudorandom floating positive point number 
-/// in \f$[0,1]\f$by generatings a pseudorandom unsigned
-/// integer and dividing it by \f$2^{32} - 1\f$.
+/// Generate a pseudorandom floating positive point number in \f$[0,1]\f$ by
+/// generating a pseudorandom unsigned integer and dividing it by 
+/// \f$2^{32} - 1\f$. Although the result is a float, the internal
+/// calculation here is done with doubles to avoid loss of precision
+/// (UINT ints have 32 bits but floats have only a 24-bit mantissa).
+/// The results are scattered within \f$[0,1]\f$ but the randomness is limited
+/// by the fact that floats are not randomly distributed in \f$[0,1]\f$ to
+/// begin with.
 /// \return A pseudorandom floating point number from \f$[0,1]\f$.
 
 float CRandom::randf(){
-  return (float)randn()/(float)0xFFFFFFFF;
+  return float((double)randn()/(double)0xFFFFFFFF); 
 } //randf
+
+/// Generate a (hopefully) aesthetically pleasing pseudorandom color by
+/// generating a color in HSV format with a random hue, then converting that 
+/// to RGB format. HSV is used because colors are better distributed in
+/// HSV-space than in RGB-space. The colors generated are reasonable dark and
+/// highly unlikely to be gray. 
+/// \param rgb [out] An aesthetically pleasing pseudorandom RGB color.
+
+void CRandom::randclr(UINT rgb[3]){
+  float RGB[3]; //RGB color in floating point format
+  HSVtoRGB(randf(), 0.75f, 0.6f, RGB); //generate in HSV and convert to RGB
+
+  for(int i=0; i<3; i++) //convert from floating point to [0..255]
+    rgb[i] = (UINT)std::round(RGB[i]*255.0f);
+} //randclr

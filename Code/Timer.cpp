@@ -92,10 +92,10 @@ void CTimer::Finish(){
 
 #if defined(_MSC_VER) //Windows and Visual Studio 
 
-  unsigned CTimer::CPUTime(){ 
+  UINT CTimer::CPUTime(){ 
     UINT64 llCNS = 0; //for CPU time in centinanoseconds
     const DWORD pid = GetCurrentProcessId(); //process id
-    HANDLE hp = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pid); //process handle
+    HANDLE hp = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pid); //proc handle
 
     if(hp != nullptr){ //handle is valid
       FILETIME ft0, ft1, ft2; //unused
@@ -107,16 +107,16 @@ void CTimer::Finish(){
       CloseHandle(hp); //close the process handle
     } //if
 
-    return unsigned(llCNS/10000ULL); //round to milliseconds
+    return UINT(llCNS/10000ULL); //round to milliseconds
   } //CPUTime
 
 #else //*nix and g++
 
   #include <time.h>
 
-  unsigned CTimer::CPUTime(){ //*nix version
-    return unsigned(1000.0*(double)(clock())/CLOCKS_PER_SEC);
-  } //unsigned
+  UINT CTimer::CPUTime(){ //*nix version
+    return UINT(1000.0*(double)(clock())/CLOCKS_PER_SEC);
+  } //UINT
 
 #endif
 

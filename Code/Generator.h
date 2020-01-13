@@ -60,9 +60,9 @@ class CGenerator: public CSearchThreadQueues{
     CGenerator(int n); ///< Constructor.
     CGenerator(); ///< Default constructor.
     
-    void Generate(const CTourneyDesc& t, int nThreads); ///< Generate random tour or tourney.
-    void Measure(const CTourneyDesc& t, int nThreads, int n); ///< Measure generation of random tours or tourneys.
-    void Time(const CTourneyDesc& t, int nThreads, int n); ///< Time generation of random tours or tourneys.
+    void Generate(const CTourneyDesc& t, int nThreads); ///< Generate.
+    void Measure(const CTourneyDesc& t, int nThreads, int n); ///< Measure.
+    void Time(const CTourneyDesc& t, int nThreads, int n); ///< Time.
 }; //CGenerator
 
 #endif

@@ -27,6 +27,7 @@
 #define __Timer__
 
 #include "Includes.h"
+#include "Defines.h"
 
 typedef std::chrono::system_clock sysclock; ///< System clock.
 typedef std::chrono::time_point<sysclock> systime_point; ///< System time point.
@@ -46,7 +47,7 @@ class CTimer{
     std::string m_strTimeAndDate; ///< Container for time and date string.
 
     const char*  GetDateAndTime(const systime_point p); ///< Get time and date.
-    unsigned CPUTime(); ///< Platform independent CPU time.
+    UINT CPUTime(); ///< Platform independent CPU time.
 
   public:  
     const char* GetStartDateAndTime(); ///< Get start time and date.

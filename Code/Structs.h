@@ -74,7 +74,7 @@ struct CSearchRequest{
 /// The information found by a search thread.
 
 struct CSearchResult{
-  CBoard* m_pBoard; ///< Pointer to chessboard.
+  CBoard* m_pBoard = nullptr; ///< Pointer to chessboard.
 
   CTourneyDesc m_cTourneyDesc; ///< Tourney descriptor.
 

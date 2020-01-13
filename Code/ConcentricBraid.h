@@ -49,7 +49,7 @@ class CConcentricBraid{
         10, 11,  8,  9
       }; //m_nMove4x4
 
-    int m_nMove6x6[36] =  ///< Undirected move table for 6x6 center.\image html bc6x6.png
+    int m_nMove6x6[36] =  
       {
         8, 12,  6,  7, 17,  9, 
         19, 18,  4,  1,  2,  3, 
@@ -57,7 +57,7 @@ class CConcentricBraid{
         31, 30, 16, 34, 35, 10, 
         13, 33, 15, 14, 32, 21, 
         26, 20, 24, 29, 23, 27
-      }; //m_nMove6x6
+      }; ///< Undirected move table for 6x6 center. \image html bc6x6.png
 
     CBoard* m_pBoard4x4 = nullptr; ///< Pointer to 4x4 center.
     CBoard* m_pBoard6x6 = nullptr; ///< Pointer to 6x6 center.

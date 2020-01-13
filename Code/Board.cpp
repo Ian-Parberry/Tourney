@@ -39,7 +39,7 @@ CBoard::CBoard(){
 /// Construct a square undirected board.
 /// \param n Board width and height.
 
-CBoard::CBoard(unsigned n): 
+CBoard::CBoard(UINT n): 
   CBaseBoard(n){
 } //constructor
 
@@ -47,7 +47,7 @@ CBoard::CBoard(unsigned n):
 /// \param w Board width.
 /// \param h Board height.
 
-CBoard::CBoard(unsigned w, unsigned h):
+CBoard::CBoard(UINT w, UINT h):
   CBaseBoard(w, h){
 } //constructor
 
@@ -56,13 +56,13 @@ CBoard::CBoard(unsigned w, unsigned h):
 /// \param h Board height.
 /// \param move A \f$w \times h\f$ move table.
 
-CBoard::CBoard(int move[], unsigned w, unsigned h):
+CBoard::CBoard(int move[], UINT w, UINT h):
   CBaseBoard(move, w, h){
 } //constructor
 
-/// Test whether a rail is valid, that is, the rail moves are knight's moves
-/// and are present on the board, and the cross moves are not present. Calls
-/// CBaseBoard::IsRail(int, int, int, int) to do the actual work.
+/// Test whether a rail is valid, that is, all moves are knight's moves, the
+/// primary moves are present, and the cross moves are absent.
+/// Calls CBaseBoard::IsRail(int, int, int, int) to do the actual work.
 /// \param r Rail to be tested.
 /// \return true if the rail is valid.
 
@@ -72,12 +72,11 @@ bool CBoard::IsRail(CRail& r){
   r.GetEdge0(s0, d0); //get them
   r.GetEdge1(s1, d1);
 
-  return IsRail(s0, d0, s1, d1); //test them
+  return IsRail(s0, d0, s1, d1);
 } //IsRail
 
-/// Test whether four cells form a rail, that is, the four cells are separated
-/// by knight's moves, the rail moves are present on the board, and the cross
-/// moves are not present.
+/// Test whether four cells form a rail, that is, they are separated by knight's
+/// moves, the primary moves are present, and the cross moves are absent.
 /// \param s0 Index of source of first move.
 /// \param d0 Index of destination of first move.
 /// \param s1 Index of source of second move.
@@ -85,32 +84,15 @@ bool CBoard::IsRail(CRail& r){
 /// \return true if the cells form a rail.
 
 bool CBoard::IsRail(int s0, int d0, int s1, int d1){
-  return IsKnightMove(s0, d0) && IsKnightMove(s1, d1) && //rails are knight's moves
-    IsKnightMove(s0, s1) && IsKnightMove(d0, d1) && //flipped rails are knight's moves
-    IsMove(s0, d0) && IsMove(s1, d1) && //moves that need to be there
-    !IsMove(s0, s1) && !IsMove(d0, d1); //moves that need to be not there 
+  return 
+    IsKnightMove(s0, d0) && IsKnightMove(s1, d1) && //primary knight's moves
+    IsKnightMove(s0, s1) && IsKnightMove(d0, d1) && //cross knight's moves
+    IsMove(s0, d0) && IsMove(s1, d1) && //primary moves are present
+    !IsMove(s0, s1) && !IsMove(d0, d1); //cross moves are absent 
 } //IsRail
 
-/// A rail spans different cycles if both vertices of each edge
-/// are in the same cycle, but it's a different cycle for each edge.
-/// \param r A rail.
-/// \param id Array of tourney identifiers.
-/// \return true if the rail spans different cycles.
-
-bool CBoard::RailSpansCycles(CRail& r, int id[]){
-  int src0, dest0, src1, dest1; //rail vertices
-
-  r.GetEdge0(src0, dest0); //rail edge
-  r.GetEdge1(src1, dest1); //rail edge
-
-  return id == nullptr || //either we don't actually care, or
-    (id[src0] == id[dest0] && //vertices of edge 0 are in a cycle
-     id[src1] == id[dest1] && //vertices of edge 1 are in a cycle
-     id[src0] != id[src1]); //edges are in different cycles
-} //RailSpansCycles
-
-/// Find all rails. Assumes that the board is directed. The algorithm used is
-/// as follows. Suppose we have an \f$n \times n\f$ board. Let \f$0 < i \leq n\f$
+/// Find all rails. Assumes that the board is directed. The algorithm used is as
+/// follows. Suppose we have an \f$n \times n\f$ board. Let \f$0 < i \leq n\f$
 /// be a cell index. The potential downward moves from cell \f$i\f$ have move
 /// index \f$4\f$, \f$5\f$, \f$6\f$, or \f$7\f$.
 ///
@@ -184,15 +166,15 @@ void CBoard::FindRails(std::vector<CRail>& rails){
     std::swap(rails[i], rails[m_cRandom.randn(i, n - 1)]); //...because math
 } //FindRails
 
-/// Flip a rail. Assumes that the board is directed. The rails in the top row
-/// of this image get flipped to the corresponding rails in the bottom row 
+/// Switch a rail. Assumes that the board is directed. The rails in the top row
+/// of this image get switched to the corresponding rails in the bottom row 
 /// (and vice-versa).
 ///
 /// \image html rails.png
 ///
 /// \param r A rail.
 
-void CBoard::FlipRail(CRail& r){
+void CBoard::Switch(CRail& r){
   assert(IsDirected()); //safety
 
   int s0, d0, s1, d1; //rail vertices
@@ -209,29 +191,20 @@ void CBoard::FlipRail(CRail& r){
             
   InsertDirectedMove(s0, s1);
   InsertDirectedMove(d0, d1);
-} //FlipRail
+} //Switch
 
-/// Shatter a tourney by flipping a set of non-overlapping rails.
+/// Shatter a tourney by switching a set of non-overlapping rails.
 /// Assumes that the board is directed.
 
 void CBoard::Shatter(){ 
   assert(IsDirected()); //safety
 
-  std::vector<CRail> rails; //rail list.
+  std::vector<CRail> rails; //rail list
   FindRails(rails); //find rails and put them in the rail list
   
-  for(CRail& r: rails){ //for each rail
-    int src0, src1, dest0, dest1; //source and destination cells of rail moves
-
-    r.GetEdge0(src0, dest0); //rail move 0
-    r.GetEdge1(src1, dest1); //rail move 1
-
-    //flip valid rails (validity is affected by rails already flipped).
-
-    if(IsMove(src0, dest0) && IsMove(src1, dest1) &&
-      !IsMove(src0, src1) && !IsMove(dest0, dest1))  
-        FlipRail(r);
-  } //for
+  for(CRail& r: rails) //for each rail
+    if(IsRail(r)) //if it's still a rail, that is, it hasn't been flipped
+      Switch(r); //flip it
 } //Shatter
 
 /// Blur a tourney by shattering it a few times. The board can be directed or
@@ -241,90 +214,45 @@ void CBoard::Shatter(){
 void CBoard::Blur(){
   MakeDirected(); //need a directed board
   
-  for(int i=0; i<16; i++) //shatter many times
+  for(int i=0; i<16; i++){
     Shatter();
-
-  for(int i=0; i<8; i++) //hopefully one of these joins will stick
     Join();
-  
+  } //for
+
   MakeUndirected(); //make it undirected before returning
 } //Blur
 
 /// Join a tourney, that is, attempt to make it into a knight's tour by 
-/// flipping rails. Maintains directedness. First a rail (multi-) graph is
-/// created with a vertex for each tourney and an edge for each cell-disjoint
-/// rail that connects them. Flipping the rails in a spanning tree of the rail
-/// graph connects up as many cycles as it can. This should result in fewer
-/// cycles. For example, the following image (left) shows the rail graph of 
-/// a tourney. The numbers on the edges indicate the number of cell-disjoint
-/// rails that intersect  two cycles. A breadth-first spanning tree of this
-/// graph is shown on the right.
+/// switching rails. Assumes that the tourney is directed. First a rail
+/// (multi-) graph is created with a vertex for each tourney and an edge for
+/// each cell-disjoint rail that connects them. Switching the rails in a
+/// spanning forest of the rail graph connects up as many cycles as it can
+/// (which may may not necessarily result in a knight's tour). For example, the
+/// following image shows the rail graph of a tourney at left. The numbers on
+/// the edges indicate the number of cell-disjoint rails that intersect two
+/// cycles. A breadth-first spanning tree of this graph is shown on the right.
 ///
 /// \image html bfst22.png
 
 void CBoard::Join(){
-  if(IsTour())return; //bail out, it's a knight's tour already
-
-  //make board directed, if it isn't already
-
-  bool bWasUndirected = false;
-
-  if(IsUndirected()){
-    bWasUndirected = true;
-    MakeDirected();
-  } //if
-  
   std::vector<CRail> rails; //rail list.
   FindRails(rails); //find rails and put them in the rail list
 
-  //identify which tourney each cell is in
-
-  int numcycles = 0; //number of cycles seen in tourney
-
-  int *id = new int[m_nSize]; //identifies which tourney a cell is in
-
-  for(unsigned i=0; i<m_nSize; i++) //for each cell
-    id[i] = UNUSED; //set identifier to indicate "no tourney"
-
-  for(unsigned start=0; start<m_nSize; start++){ //for each start cell
-    if(id[start] == UNUSED){ //if not already in a tourney
-      id[start] = numcycles; //identify as in a new tourney
-
-      int prev = start; //previous cell
-      int cur = m_nMove[start]; //current cell
-
-      while(CellIndexInRange(cur) && cur != start){ //until it loops back to start
-        id[cur] = numcycles; //identify each cell in the new cycle
-        
-        const int dest0 = m_nMove[cur]; //dest0 move
-
-        if(dest0 == prev){ //dest0 move in m_nMoveTable moves us back
-          prev = cur;
-          cur = m_nMove2[cur]; //use m_nMoveTable2 instead 
-        } //if
-
-        else{ //safe to use m_nMoveTable
-          prev = cur;
-          cur = dest0;
-        } //else
-      } //while
-
-      ++numcycles; //one more cycle seen in tourney
-    } //if
-  } //for
+  //get tourney identifiers for each cell
+  
+  int* id = new int[m_nSize]; //tourney identifiers
+  const int numcycles = GetTourneyIds(id); //get tourney id for each cell
 
   //construct the rail graph
 
   bool* used = new bool[m_nSize];
 
-  for(unsigned i=0; i<m_nSize; i++)
+  for(UINT i=0; i<m_nSize; i++)
     used[i] = false;
 
   CGraph g(numcycles); //rail graph
-
-  unsigned count = 0;
-
-  std::vector<unsigned> vecEdgeToRail;
+  UINT count = 0;
+  std::vector<UINT> vecEdgeToRail;
 
   for(auto& r: rails){ //for each rail
     int src0, dest0, src1, dest1; //rail vertices
@@ -339,7 +267,8 @@ void CBoard::Join(){
       const int idsrc1 = id[src1]; //id of tourney that src1 is in
       const int iddest1 = id[dest1]; //id of tourney that dest1 is in
 
-      if(idsrc0 == iddest0 && idsrc1 == iddest1 && idsrc0 != idsrc1){ //rail connects tourneys
+      if(idsrc0 == iddest0 && idsrc1 == iddest1 && idsrc0 != idsrc1){ 
+        //rail connects tourneys
         g.InsertEdge(idsrc0, idsrc1); //add rail edge to rail graph
         used[src0] = used[src1] = used[dest0] = used[dest1] = true;
         vecEdgeToRail.push_back(count); 
@@ -352,20 +281,39 @@ void CBoard::Join(){
   delete [] used;
   delete [] id; 
 
-  //g.PrintGraph(); //use to get a graph for a figure
+  //g.PrintGraph(); //uncomment to output a graph so you can make a figure
 
-  //flip rails in a spanning tree of the rail graph
+  //switch rails in a spanning tree of the rail graph
 
-  std::vector<unsigned> spanningtree; //rails in spanning tree of rail graph
-  g.BFST(spanningtree); //could use g.DFST instead
+  std::vector<UINT> spanningtree; //rails in spanning tree of rail graph
+  g.BFSF(spanningtree); //could use g.DFST instead
 
-  for(unsigned i: spanningtree){ //for each rail in the spanning tree
-    unsigned j = vecEdgeToRail[i]; //index in rail list
-    FlipRail(rails[j]); //flip it
+  for(UINT i: spanningtree){ //for each rail in the spanning tree
+    UINT j = vecEdgeToRail[i]; //index of rail in rail list
+    Switch(rails[j]); //switch a spanning tree rail
   } //for
+} //Join
+
+/// Join a tourney until it becomes a knight's tour. Maintains directedness. 
+/// Uses Join() to do the heavy lifting.
+
+void CBoard::JoinUntilTour(){
+  if(IsTour())return; //bail out, it's a knight's tour already
+
+  //make board directed, if it isn't already
+
+  bool bWasUndirected = false;
+
+  if(IsUndirected()){
+    bWasUndirected = true;
+    MakeDirected();
+  } //if
+  
+  while(!IsTour())
+    Join();
 
   //clean up and exit
 
   if(bWasUndirected) //if the board came in to this function undirected
     MakeUndirected(); //make it undirected again
-} //Join
+} //JoinUntilTour

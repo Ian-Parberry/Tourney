@@ -51,36 +51,36 @@ void CConcentricBraid::Generate(CBoard& b){
   const int h = b.GetHeight(); //board height
   if((w & 1) || w != h)return; //board must be square with even width
   
-  const unsigned limit = (w%4 == 2)? w/2 - 3: w/2 - 2;
+  const UINT limit = (w%4 == 2)? w/2 - 3: w/2 - 2;
 
-  for(unsigned offset=0; offset<limit; offset+=2)
-    for(unsigned k=0; k<4; k++){ 
-      unsigned i = offset;
-      unsigned j = offset + k;
+  for(UINT offset=0; offset<limit; offset+=2)
+    for(UINT k=0; k<4; k++){ 
+      UINT i = offset;
+      UINT j = offset + k;
 
       while(j < w - offset - 2){
-        unsigned cur = i*w + j;
+        UINT cur = i*w + j;
         i = (i == offset)? offset + 1: offset; 
         j += 2;
         b.InsertUndirectedMove(cur, i*w + j);
       } //while
 
       while(i < w - offset - 2){
-        unsigned cur = i*w + j;
+        UINT cur = i*w + j;
         i += 2;
         j = (j == w - offset - 1)? w - offset - 2: w - offset - 1; 
         b.InsertUndirectedMove(cur, i*w + j);
       } //while
 
       while(j >= offset + 2){
-        unsigned cur = i*w + j;
+        UINT cur = i*w + j;
         i = (i == w - offset - 1)? w - offset - 2: w - offset - 1; 
         j -= 2;
         b.InsertUndirectedMove(cur, i*w + j);
       } //while
 
       while(i >= offset + 2){
-        unsigned cur = i*w + j;
+        UINT cur = i*w + j;
         i -= 2;
         j = (j == offset)? offset + 1: offset; 
         b.InsertUndirectedMove(cur, i*w + j);

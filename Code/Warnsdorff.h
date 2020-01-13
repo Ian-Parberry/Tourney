@@ -1,5 +1,5 @@
-/// \file Warnsdorf.h
-/// \brief Header for Warnsdorf's generator CWarnsdorf.
+/// \file Warnsdorff.h
+/// \brief Header for Warnsdorff's generator CWarnsdorff.
 
 // MIT License
 //
@@ -32,10 +32,10 @@
 #include "Defines.h"
 #include "Board.h"
 
-/// \brief Knight's tour and tourney generator using Warnsdorf's heuristic.
+/// \brief Knight's tour and tourney generator using Warnsdorff's heuristic.
 ///
-/// Warnsdorf's Algorithm is a random walk that optimistically joins up
-/// to make one or more cycles aided by Warnsdorf's Heuristic which works.
+/// Warnsdorff's Algorithm is a random walk that optimistically joins up
+/// to make one or more cycles aided by Warnsdorff's Heuristic which works.
 /// as follows Instead of choosing a random next move, it chooses a move at
 /// random from the set of moves that lead to a cell that has remaining the
 /// smallest number ofavailable moves to an unvisited square. The tourney
@@ -47,27 +47,26 @@
 ///
 /// \image html Warnsdorf32.png
 ///
-/// See Conrad, Hindrichs, Morsy, and Wegener,
-/// "Wie es dem springer gelang schachbretter beliebiger groesse und
-/// zwischen beliebig vorgegebenen anfangs und endfeldern vollstaendig
-/// abzuschreiten", Spektrum der Wissenschaft, pages 10-14, 1992, and
-/// Conrad, Hindrichs, Morsy, and Wegener,
-/// "Solution of the knight's Hamiltonian path problem on chessboards",
-/// Discrete Applied Mathematics, 50(2):125-134, 1994.
+/// See Conrad, Hindrichs, Morsy, and Wegener, "Wie es dem springer gelang
+/// schachbretter beliebiger groesse und zwischen beliebig vorgegebenen anfangs
+/// und endfeldern vollstaendig abzuschreiten", Spektrum der Wissenschaft,
+/// pages 10-14, 1992, and Conrad, Hindrichs, Morsy, and Wegener, "Solution of
+/// the knight's Hamiltonian path problem on chessboards", Discrete Applied
+/// Mathematics, 50(2):125-134, 1994.
 
-class CWarnsdorf{
+class CWarnsdorff{
   private:    
     CRandom m_cRandom; ///< PRNG.
 
-    int RandomClosedWalk(CBoard& b, int start); ///< Create a closed random walk.
+    int RandomClosedWalk(CBoard& b, int start); ///< Create closed random walk.
 
     bool GenerateTour(CBoard& b); ///< Generate a knight's tour.
     bool GenerateTourney(CBoard& b); ///< Generate a tourney.
 
   public:
-    CWarnsdorf(int seed); ///< Constructor.
+    CWarnsdorff(int seed); ///< Constructor.
 
     void Generate(CBoard& b, CycleType t); ///< Generate a tour or tourney.
-}; //CWarnsdorf
+}; //CWarnsdorff
 
 #endif

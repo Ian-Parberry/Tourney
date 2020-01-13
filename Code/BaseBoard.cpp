@@ -39,23 +39,24 @@ CBaseBoard::CBaseBoard(){
 /// Construct a square undirected board.
 /// \param n Board width and height.
 
-CBaseBoard::CBaseBoard(unsigned n): CBaseBoard(n, n){
+CBaseBoard::CBaseBoard(UINT n): CBaseBoard(n, n){
 } //constructor
 
 /// Construct a rectangular undirected board.
 /// \param w Board width.
 /// \param h Board height.
 
-CBaseBoard::CBaseBoard(unsigned w, unsigned h):
+CBaseBoard::CBaseBoard(UINT w, UINT h):
   m_nWidth(w), m_nHeight(h), m_nSize(w*h)
 {
   if(!(m_nSize & 1)){ //size must be even
     m_nMove = new int[m_nSize]; //create move table
 
-    for(unsigned i=0; i<m_nSize; i++) //initialize move table
+    for(UINT i=0; i<m_nSize; i++) //initialize move table
       m_nMove[i] = UNUSED;
   } //if
   
+  ::srand(timeGetTime());
   m_cRandom.srand();
 } //constructor
 
@@ -64,13 +65,13 @@ CBaseBoard::CBaseBoard(unsigned w, unsigned h):
 /// \param h Board height.
 /// \param move A \f$w \times h\f$ move table.
 
-CBaseBoard::CBaseBoard(int move[], unsigned w, unsigned h):
+CBaseBoard::CBaseBoard(int move[], UINT w, UINT h):
   m_nWidth(w), m_nHeight(h), m_nSize(w*h)
 {
   if(!(m_nSize & 1)){ //size must be even
     m_nMove = new int[m_nSize]; //create move table
 
-    for(unsigned i=0; i<m_nSize; i++) //copy move table
+    for(UINT i=0; i<m_nSize; i++) //copy move table
       m_nMove[i] = move[i];
   } //if
 } //constructor
@@ -86,7 +87,7 @@ CBaseBoard::~CBaseBoard(){
 /// the secondary move table so that the cleared board is undirected.
 
 void CBaseBoard::Clear(){
-  for(unsigned i=0; i<m_nSize; i++)
+  for(UINT i=0; i<m_nSize; i++)
     m_nMove[i] = UNUSED;
 
   delete [] m_nMove2;
@@ -187,7 +188,6 @@ bool CBaseBoard::IsUnused(int pos, const MoveDelta& d){
 /// \return true If the cell move d away from pos is on the board.
 
 bool CBaseBoard::IsOnBoard(int pos, const MoveDelta& d){
-  assert(IsUndirected()); //safety
   if(!CellIndexInRange(pos))return false;
   
   const int x = pos%m_nWidth + d.first; //destination column
@@ -240,7 +240,7 @@ int CBaseBoard::operator[](int index){
 bool CBaseBoard::IsTour(){
   int prev = 0;
   int cur = m_nMove[0];
-  unsigned count = 1;
+  UINT count = 1;
 
   //now we can begin the tour
 
@@ -268,7 +268,7 @@ bool CBaseBoard::IsTour(){
 bool CBaseBoard::IsTourney(){
   int *count = new int[m_nSize];
 
-  for(unsigned i=0; i<m_nSize; i++)
+  for(UINT i=0; i<m_nSize; i++)
     count[i] = 0;
 
   //all cells must be used
@@ -276,7 +276,7 @@ bool CBaseBoard::IsTourney(){
   bool bAllCellsUsed = true;
 
   if(IsUndirected()){ //board is undirected
-    for(unsigned i=0; i<m_nSize && bAllCellsUsed; i++){
+    for(UINT i=0; i<m_nSize && bAllCellsUsed; i++){
       if(CellIndexInRange(m_nMove[i])){
         ++count[i];
         ++count[m_nMove[i]];
@@ -286,7 +286,7 @@ bool CBaseBoard::IsTourney(){
   } //if
 
   else{ //board is directed
-    for(unsigned i=0; i<m_nSize && bAllCellsUsed; i++){
+    for(UINT i=0; i<m_nSize && bAllCellsUsed; i++){
       if(CellIndexInRange(m_nMove[i]))
         ++count[m_nMove[i]];
       else bAllCellsUsed = false;
@@ -304,7 +304,7 @@ bool CBaseBoard::IsTourney(){
   bool bDegree2 = true;
 
   if(bAllCellsUsed)
-    for(unsigned i=0; i<m_nSize; i++)
+    for(UINT i=0; i<m_nSize; i++)
       if(count[i] != 2)
         bDegree2 = false;
 
@@ -335,10 +335,10 @@ bool CBaseBoard::IsUndirected(){
 void CBaseBoard::MakeDirected(){
   if(IsUndirected()){
     m_nMove2 = new int[m_nSize];
-    for(unsigned i=0; i<m_nSize; i++)
+    for(UINT i=0; i<m_nSize; i++)
       m_nMove2[i] = UNUSED;
 
-    for(unsigned i=0; i<m_nSize; i++)
+    for(UINT i=0; i<m_nSize; i++)
       if(CellIndexInRange(m_nMove[i]))
        m_nMove2[m_nMove[i]] = i;
   } //if
@@ -352,10 +352,10 @@ void CBaseBoard::MakeUndirected(){
   if(IsDirected() && IsTourney()){   
     int* temp = new int[m_nSize]; 
   
-    for(unsigned i=0; i<m_nSize; i++)
+    for(UINT i=0; i<m_nSize; i++)
       temp[i] = UNUSED;
 
-    for(unsigned start=0; start<m_nSize; start++)
+    for(UINT start=0; start<m_nSize; start++)
       if(temp[start] == UNUSED){
 
         int prev = start;
@@ -578,8 +578,8 @@ void CBaseBoard::Save(std::string& name){
   fopen_s(&output, buffer, "wt");
 
   if(output != nullptr){
-    for(unsigned i=0; i<m_nHeight; i++){
-      for(unsigned j=0; j<m_nWidth; j++){
+    for(UINT i=0; i<m_nHeight; i++){
+      for(UINT j=0; j<m_nWidth; j++){
         const int cell = i*m_nWidth + j;
         fprintf_s(output, "%d", GetMoveIndex(cell, m_nMove[cell]));
       } //for
@@ -590,15 +590,59 @@ void CBaseBoard::Save(std::string& name){
   } //if
 } //Save
 
+/// Assign a tourney identifier to each cell. This function works by numbering
+/// the cycles and sets the id entry for each cell in a cycle to be the 
+/// cycle number in the order in which the cycles are found.
+/// \param id [out]  Array of tourney identifiers, one for each cell.
+/// \return The number of cycles in the tourney.
+
+int CBaseBoard::GetTourneyIds(int*& id){
+  int numcycles = 0; //number of cycles seen in tourney
+
+  for(UINT i=0; i<m_nSize; i++) //for each cell
+    id[i] = UNUSED; //set identifier to indicate "no tourney"
+
+  for(UINT start=0; start<m_nSize; start++){ //for each start cell
+    if(id[start] == UNUSED){ //if not already in a tourney
+      id[start] = numcycles; //identify as in a new tourney
+
+      int prev = start; //previous cell
+      int cur = m_nMove[start]; //current cell
+
+      while(CellIndexInRange(cur) && cur != start){ //while not closed
+        id[cur] = numcycles; //identify each cell in the new cycle
+        
+        const int dest0 = m_nMove[cur]; //dest0 move
+
+        if(dest0 == prev){ //dest0 move in m_nMoveTable moves us back
+          prev = cur;
+          cur = m_nMove2[cur]; //use m_nMoveTable2 instead 
+        } //if
+
+        else{ //safe to use m_nMoveTable
+          prev = cur;
+          cur = dest0;
+        } //else
+      } //while
+
+      ++numcycles; //one more cycle seen in tourney
+    } //if
+  } //for
+
+  return numcycles;
+} //GetTourneyIds
+
 /// Save the board to an SVG file suitable for display on a web page. Open
-/// it up in your favorite browser. SVG files are very large, but they compress
-/// very well as a zip file. The upside is that they are vector graphics, so
-/// they zoom very well without pixelization.
-/// Assumes that the board is undirected.
+/// it up in your favorite browser. SVG files can be quite large, but the
+/// upside is that they are vector graphics, so they zoom very well without
+/// pixelization. Assumes that the board is undirected.
 /// \param name Root of file name.
 
 void CBaseBoard::SaveToSVG(std::string& name){  
   assert(IsUndirected()); //safety
+  
+  int* id = new int[m_nSize]; //tourney identifiers
+  const int numcycles = GetTourneyIds(id); //get tourney id for each cell
 
   char buffer[256];
   sprintf_s(buffer, "%s.svg", name.c_str());
@@ -610,83 +654,133 @@ void CBaseBoard::SaveToSVG(std::string& name){
     const int w = m_nWidth; //shorthand
     const int h = m_nHeight; //shorthand
     const int n = m_nSize; //shorthand
-
-    float scale = 0.5f;
-    if(m_nSize > 100000)scale = 0.01f;
-    else if(m_nSize > 16384)scale = 0.125f;
-    else if(m_nSize > 1024)scale = 0.25f;
   
-    const float cellsize0 = 32; //cell size before scaling
-    const float cellsize = scale*cellsize0; //scale the cell size
-    const float spotsize = cellsize/6.0f; //spot size
-    const float strokewidth = 2.0f*scale;
+    const float cellsize = 16; //cell size
+    const float spotsize = 2.8f; //spot size
+    const float strokewidth = 1.0f; //default line width
+    const float strokewidth2 = 2.0f; //thick line width
 
-    fprintf(output, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+    const UINT sw = (UINT)std::ceil(w*cellsize); //screen width
+    const UINT sh = (UINT)std::ceil(h*cellsize); //screen height
 
-    const unsigned sw = (unsigned)std::ceil(w*cellsize); //screen width
-    const unsigned sh = (unsigned)std::ceil(h*cellsize); //screen height
+    fprintf(output, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //header
+
+    //svg tag
 
     fprintf(output, "<svg width=\"%u\" height=\"%u\" ", sw + 8, sh + 8);
     fprintf(output, "viewBox=\"-4 -4 %u %u\" ", sw + 8, sh + 8);
     fprintf(output, "xmlns=\"http://www.w3.org/2000/svg\">");
+
+    //style tag
+
     fprintf(output, "<style>");
-    fprintf(output, "circle{fill:black;r:%0.1f}", spotsize);	
-    fprintf(output, "line{stroke:black;stroke-width:%0.1f}", 2.0f*strokewidth);
+    fprintf(output, "circle{fill:black;r:%0.1f}", spotsize);
+    fprintf(output, "polyline{fill:none;stroke:black;stroke-width:%0.1f}",
+      strokewidth2);	
+    fprintf(output, "line{stroke:black;stroke-width:%0.1f}", strokewidth2);
     fprintf(output, "</style>");
 
-    //board
+    //bounding rectangle
 
-    fprintf(output, "<rect width=\"%u\" height=\"%u\" ", sw, sh);
+    fprintf(output, "<rect width=\"%u\" height=\"%u\" ", sw, sh); //rectangle
     fprintf(output, "style=\"fill:white;stroke:black;stroke-width:%s\"/>",
       NumString(strokewidth).c_str());
 
-    const std::string bds = "style=\"stroke-width:" + NumString(strokewidth) + "\"";
+    //cell boundary lines
+
+    const std::string bds = 
+      "style=\"stroke-width:" + NumString(strokewidth) + "\"";
+    const std::string wstr = NumString(w*cellsize);
+    const std::string hstr = NumString(h*cellsize);
     
-    for(int i=1; i<h; i++)
+    for(int i=1; i<h; i++){ //horizontal lines
+      const std::string s = NumString((float)i*cellsize);
       fprintf(output, "<line x1=\"0\" y1=\"%s\" x2=\"%s\" y2=\"%s\" %s/>",
-        NumString((float)i*cellsize).c_str(),
-        NumString((float)w*cellsize).c_str(), 
-        NumString((float)i*cellsize).c_str(), 
-        bds.c_str()
-      );
+        s.c_str(), wstr.c_str(), s.c_str(), bds.c_str());
+    } //for
     
-    for(int i=1; i<w; i++)
+    for(int i=1; i<w; i++){ //vertical lines
+      const std::string s = NumString((float)i*cellsize);
       fprintf(output, "<line x1=\"%s\" y1=\"0\" x2=\"%s\" y2=\"%s\" %s/>",
-        NumString((float)i*cellsize).c_str(), 
-        NumString((float)i*cellsize).c_str(), 
-        NumString((float)h*cellsize).c_str(), 
-        bds.c_str()
-      );
+        s.c_str(), s.c_str(), hstr.c_str(), bds.c_str());
+    } //for
 
-    fprintf(output, "");
+    //knight's moves (lines and circles)
 
-    //knight's tour
+    bool* used = new bool[n]; //whether cell has been used in a cycle
 
-    for(int i=0; i<w; i++)
-      for(int j=0; j<h; j++){
-        const int src = j*w + i;
-        const int dest = m_nMove[src];
-  
-        if(0 <= dest && dest < n){
-          const float srcx = (i + 0.5f)*cellsize;
-          const float srcy = (h - 1 - j + 0.5f)*cellsize;
-  
-          const float destx = (dest%w + 0.5f)*cellsize;
-          const float desty = (h - 1 - std::floor((float)dest/w) + 0.5f)*cellsize;
+    for(int i=0; i<n; i++) //mark all cells unused
+      used[i] = false;
 
-          fprintf(output, "<line x1=\"%s\" y1=\"%s\" x2=\"%s\" y2=\"%s\"/>",
-            NumString(srcx).c_str(),  NumString(srcy).c_str(),
-            NumString(destx).c_str(), NumString(desty).c_str()
-          );
+    //Iterate through each cell. If that cell is unused then iterate
+    //through the cells on the cycle that starts there.
 
-          fprintf(output, "<circle cx=\"%s\" cy=\"%s\"/>",
-            NumString(srcx).c_str(), NumString(srcy).c_str());
-        } //if
-      } //for
+    for(int start=0; start<n; start++) //for each start cell
+      if(!used[start]){ //if not used in a previous cycle
+        std::string polylinetag; //contents of polyline tag for current cycle
 
-    fprintf(output, "</svg>\n");
+        //pseudorandom color for if there's more than one cycle
+
+        UINT rgb[3] = {0, 0, 0}; //color for the current cycle
+        m_cRandom.randclr(rgb); //get random color
+        const std::string colorstr = "rgb(" + std::to_string(rgb[0]) + ","
+          + std::to_string(rgb[1]) + "," + std::to_string(rgb[2]) + ")";
+
+        //if there's more than one cycle, append stroke color to polyline tag
+
+        if(numcycles > 1)  
+          polylinetag += "style=\"stroke:" + colorstr + "\" ";
+
+        //iterate through cells on this cycle, printing a circle tag of
+        //the correct color at the cell center and appending the center points
+        //to string polylinetag to be printed later
+        
+        polylinetag += "points=\""; //start the points list
+
+        int cur = start; //current cell
+
+        do{ //process current cell
+          const float x = (cur%w + 0.5f)*cellsize; //cell x-coordinate
+          const float y = (cur/w + 0.5f)*cellsize; //cell y-coordinate
+
+          //print tag for circle at center of cell
+
+          std::string circletag; //contents of circle polylinetag
+
+          if(numcycles > 1) //append fill color to the circle tag    
+            circletag += "style=\"fill:" + colorstr + "\" ";           
+
+          circletag += "cx=\"" + NumString(x) + "\" cy=\"" + NumString(y) + "\"";
+          fprintf(output, "<circle %s/>", circletag.c_str());
+
+          //append center point to point list for polyline tag and continue
+
+          polylinetag += NumString(x) + " " + NumString(y) + " "; 
+
+          used[cur] = true; //mark cell used
+          cur = m_nMove[cur]; //advance to next cell
+        }while(cur != start); //exit when we get back to the start
+    
+        //close the cycle by adding the last edge to the polyline tag
+
+        const float x = (start%w + 0.5f)*cellsize;
+        const float y = (start/w + 0.5f)*cellsize;
+        polylinetag += NumString(x) + " " + NumString(y) + " ";
+
+        //print the polyline tag to the SVG file after the circle tags
+
+        fprintf(output, "<polyline %s\"/>", polylinetag.c_str());
+      } //if
+
+    fprintf(output, "</svg>\n"); //close the svg tag
+
+    //clean up and exit
+
+    delete [] used;
     fclose(output);
   } //if
+
+  delete [] id;
 } //SaveToSVG
 
 #pragma endregion Save functions

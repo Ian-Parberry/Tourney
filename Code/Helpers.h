@@ -31,10 +31,12 @@
 #include "Structs.h"
 
 #if !defined(_MSC_VER)
-  void fopen_s(FILE** stream, const char* name, const char* fmt); ///< fopen_s for *NIX.
+  void fopen_s(FILE** stream, const char* name, const char* fmt); 
   
-  #define fprintf_s fprintf
-  #define sprintf_s sprintf
+  #define fprintf_s fprintf 
+  #define sprintf_s sprintf 
+
+  UINT timeGetTime(); 
 #endif
 
 using MoveDelta = std::pair<int, int>; ///< Move delta for a knight's move.
@@ -42,5 +44,6 @@ using MoveDeltas = std::vector<MoveDelta>; ///< Move deltas for knight's moves.
 
 std::string MakeFileNameBase(const CTourneyDesc& t, int w=-1); ///< Make file name base.
 std::string NumString(float x); ///< Make string from number.
+void HSVtoRGB(float h, float s, float v, float rgb[3]); ///< HSV to RGB color.
 
 #endif

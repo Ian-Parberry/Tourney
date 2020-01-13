@@ -25,5 +25,8 @@
 
 #include "SearchThreadQueues.h"
 
-CThreadSafeQueue<CSearchRequest> CSearchThreadQueues::m_cSearchRequest; ///< Search request queue.
-CThreadSafeQueue<CSearchResult>  CSearchThreadQueues::m_cSearchResult;  ///< Search result queue.
+CThreadSafeQueue<CSearchRequest> 
+  CSearchThreadQueues::m_cSearchRequest; ///< Search request queue.
+
+CThreadSafeQueue<CSearchResult>
+  CSearchThreadQueues::m_cSearchResult;  ///< Search result queue.

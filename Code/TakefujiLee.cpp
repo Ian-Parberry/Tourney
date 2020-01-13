@@ -85,10 +85,10 @@ bool CTakefujiLee::Update(){
     CNeuron* pNeuron = (CNeuron*)pEdge;
     int newstate = pNeuron->GetState() + 4;
 
-    unsigned v0, v1;
+    UINT v0, v1;
     pEdge->GetVertexIndices(v0, v1);
 
-    for(unsigned v: {v0, v1}){
+    for(UINT v: {v0, v1}){
       std::vector<CEdge*>* adj = m_pVertexList[v].GetAdjacencyList();
     
       for(CEdge* pEdge2: *adj)
@@ -123,14 +123,14 @@ bool CTakefujiLee::IsStable(){
 bool CTakefujiLee::HasDegree2(){
   int* degree = new int[m_nNumVerts];
 
-  for(unsigned int i=0; i<m_nNumVerts; i++)
+  for(UINT i=0; i<m_nNumVerts; i++)
     degree[i] = 0;
 
   for(CEdge* pEdge: m_vEdgeList){
     CNeuron* pNeuron = (CNeuron*)pEdge;
 
     if(pNeuron->GetOutput()){
-      unsigned i, j;
+      UINT i, j;
       pNeuron->GetVertexIndices(i, j);
       degree[i]++;
       degree[j]++;
@@ -139,7 +139,7 @@ bool CTakefujiLee::HasDegree2(){
 
   bool bDegree2 = true;
 
-  for(unsigned int i=0; i<m_nNumVerts && bDegree2; i++)
+  for(UINT i=0; i<m_nNumVerts && bDegree2; i++)
     bDegree2 = bDegree2 && degree[i] == 2;
 
   delete [] degree;
@@ -170,14 +170,15 @@ void CTakefujiLee::Generate(CBoard& b){
 
 /// Assuming the neural network has converged, convert the outputs
 /// of its neurons to a move table.
+/// \param b [out] Chessboard for the results.
 
 void CTakefujiLee::GraphToBoard(CBoard& b){
   b.Clear();
 
-  for(unsigned int i=0; i<m_nNumVerts; i++)
+  for(UINT i=0; i<m_nNumVerts; i++)
     m_pVertexList[i].Mark(false);
 
-  unsigned startindex = 0;
+  UINT startindex = 0;
   while(startindex < m_nNumVerts  && m_pVertexList[startindex].Marked())
     startindex++;
 
@@ -252,7 +253,7 @@ void CTakefujiLee::RandomizeEdgeList(){
   const size_t n = m_vEdgeList.size();
 
   for(size_t i=0; i<n; i++){
-    const int j = m_cRandom.randn((unsigned)i, (unsigned)n - 1);
+    const int j = m_cRandom.randn((UINT)i, (UINT)n - 1);
     std::swap(m_vEdgeList[i], m_vEdgeList[j]);
   } //for
 } //RandomizeEdgeList

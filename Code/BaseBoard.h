@@ -27,6 +27,7 @@
 #define __BaseBoard__
 
 #include "Includes.h"
+#include "Defines.h"
 #include "Structs.h"
 #include "Helpers.h"
 
@@ -69,9 +70,9 @@ class CBaseBoard{
   protected:
     CRandom m_cRandom; ///< PRNG.
 
-    unsigned m_nWidth = 0; ///< Board width in cells.
-    unsigned m_nHeight = 0; ///< Board height in cells.
-    unsigned m_nSize = 0; ///< Board size in cells.
+    UINT m_nWidth = 0; ///< Board width in cells.
+    UINT m_nHeight = 0; ///< Board height in cells.
+    UINT m_nSize = 0; ///< Board size in cells.
 
     int* m_nMove = nullptr; ///< Primary move table.
     int* m_nMove2 = nullptr; ///< Secondary move table.
@@ -84,12 +85,14 @@ class CBaseBoard{
 
     bool IsMove(int i, int j); ///< Move test.
     int GetDest(int i, const MoveDelta& delta); ///< Get destination of move.
+
+    int GetTourneyIds(int*& id); ///< Get tourney identifier for each cell.
     
   public:
     CBaseBoard(); ///< Constructor.
-    CBaseBoard(unsigned n); ///< Constructor.
-    CBaseBoard(unsigned w, unsigned h); ///< Constructor.
-    CBaseBoard(int move[], unsigned w, unsigned h); ///< Constructor.
+    CBaseBoard(UINT n); ///< Constructor.
+    CBaseBoard(UINT w, UINT h); ///< Constructor.
+    CBaseBoard(int move[], UINT w, UINT h); ///< Constructor.
 
     ~CBaseBoard(); ///< Destructor.
 
