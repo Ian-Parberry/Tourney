@@ -106,7 +106,7 @@ std::string MakeFileNameBase(const CTourneyDesc& t, int w){
     case CycleType::Tourney:         s += "Trny"; break;
   } //switch
 
-  if(t.m_bBlur)s += "Blur"; //blurred
+  if(t.m_bObfuscate)s += "Obf"; //obfuscated
   if(w > 0)s += std::to_string(w); //board width and height
 
   return s;

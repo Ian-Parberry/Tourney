@@ -28,7 +28,6 @@
 
 #include "Defines.h"
 
-bool StartTask(Task task, const CTourneyDesc& t,
-  int nNumThreads); ///< Start a task.
+bool StartTask(Task task, const CTourneyDesc& t,int nNumThreads); ///< Start task.
 
 #endif

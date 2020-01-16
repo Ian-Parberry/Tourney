@@ -31,12 +31,12 @@
 #include "Structs.h"
 
 #if !defined(_MSC_VER)
-  void fopen_s(FILE** stream, const char* name, const char* fmt); 
+  void fopen_s(FILE** stream, const char* name, const char* fmt); ///< fopen_s for *NIX.
   
-  #define fprintf_s fprintf 
-  #define sprintf_s sprintf 
+  #define fprintf_s fprintf ///< fprintf_s for *NIX.
+  #define sprintf_s sprintf ///< sprintf_s for *NIX.
 
-  UINT timeGetTime(); 
+  UINT timeGetTime(); ///< Something a little bit like timeGetTime for *NIX.
 #endif
 
 using MoveDelta = std::pair<int, int>; ///< Move delta for a knight's move.

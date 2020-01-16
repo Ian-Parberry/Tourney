@@ -86,7 +86,7 @@ class CBaseBoard{
     bool IsMove(int i, int j); ///< Move test.
     int GetDest(int i, const MoveDelta& delta); ///< Get destination of move.
 
-    int GetTourneyIds(int*& id); ///< Get tourney identifier for each cell.
+    UINT GetTourneyIds(int*& id); ///< Get tourney identifier for each cell.
     
   public:
     CBaseBoard(); ///< Constructor.

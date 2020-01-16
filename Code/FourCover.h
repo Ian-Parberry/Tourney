@@ -30,7 +30,10 @@
 
 /// \brief Four-cover tourney generator.
 /// 
-/// A four-cover tourney consists of cycles of length four.
+/// A four-cover tourney has width and height divisible by 4 and consists
+/// of copies of the following \f$4 \times 4\f$ tourney of size \f$4\f$.
+///
+/// \image html FourCover.png
 
 class CFourCover{
   private:

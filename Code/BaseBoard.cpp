@@ -596,8 +596,8 @@ void CBaseBoard::Save(std::string& name){
 /// \param id [out]  Array of tourney identifiers, one for each cell.
 /// \return The number of cycles in the tourney.
 
-int CBaseBoard::GetTourneyIds(int*& id){
-  int numcycles = 0; //number of cycles seen in tourney
+UINT CBaseBoard::GetTourneyIds(int*& id){
+  UINT numcycles = 0; //number of cycles seen in tourney
 
   for(UINT i=0; i<m_nSize; i++) //for each cell
     id[i] = UNUSED; //set identifier to indicate "no tourney"

@@ -34,10 +34,10 @@ extern MoveDeltas g_vecDeltas; ///< Move deltas for all possible knight's moves.
 /// The tourney descriptor constructor.
 /// \param gen Generator type.
 /// \param c Cycle type.
-/// \param blur True to blur (defaults to false).
+/// \param obfuscate True to obfuscate (defaults to false).
 
-CTourneyDesc::CTourneyDesc(GeneratorType gen, CycleType c, bool blur):
-  m_eGenerator(gen), m_eCycle(c), m_bBlur(blur){
+CTourneyDesc::CTourneyDesc(GeneratorType gen, CycleType c, bool obfuscate):
+  m_eGenerator(gen), m_eCycle(c), m_bObfuscate(obfuscate){
 } //CTourneyDesc
 
 /// The default tourney descriptor constructor. 

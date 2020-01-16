@@ -27,11 +27,14 @@
 #define __Input__
 
 #include "Defines.h"
+#include "Structs.h"
 
-bool ReadUnsigned(UINT& n, Parity parity, UINT lo); ///< Get UINT from stdin.
-bool ReadGeneratorType(GeneratorType& t); ///< Get the generator type from stdin.
-bool ReadCycleType(CycleType& t); ///< Get the cycle type from stdin.
-bool ReadBlur(bool& blurred); ///< Get blur status from stdin.
-bool ReadTask(Task& t); ///< Get the task from stdin.
+bool ReadUnsigned(UINT& n, Parity parity, UINT lo); ///< Read a UINT from stdin.
+
+bool ReadBoardSize(UINT& n, const CTourneyDesc& t); ///< Read board size from stdin.
+bool ReadGeneratorType(GeneratorType& t); ///< Read the generator type from stdin.
+bool ReadCycleType(CycleType& t); ///< Read the cycle type from stdin.
+bool ReadObfuscate(bool& obfuscate); ///< Read obfuscate status from stdin.
+bool ReadTask(Task& t); ///< Read the task from stdin.
 
 #endif

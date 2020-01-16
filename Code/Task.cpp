@@ -37,8 +37,8 @@ std::atomic_bool g_bFinished(false); ///< Search termination flag.
 
 bool StartGenerateTask(const CTourneyDesc& t, int nNumThreads){
   UINT n = 0;
-  printf("Enter board width (even and >= 6).\n");
-  bool bRestart = ReadUnsigned(n, Parity::Even, 6);
+  printf("Enter board width.\n");
+  const bool bRestart = ReadBoardSize(n, t);
 
   if(!bRestart)
     CGenerator(n, n).Generate(t, nNumThreads); //perform the task
@@ -54,8 +54,8 @@ bool StartGenerateTask(const CTourneyDesc& t, int nNumThreads){
 
 bool StartMeasureTask(const CTourneyDesc& t, int nNumThreads){
   UINT n = 0;
-  printf("Enter board width (even and >= 6).\n");
-  bool bRestart = ReadUnsigned(n, Parity::Even, 6);
+  printf("Enter board width.\n");
+  bool bRestart = ReadBoardSize(n, t);
 
   if(!bRestart){
     UINT nSamples = 0;
@@ -83,12 +83,12 @@ bool StartTimeTask(const CTourneyDesc& t, int nNumThreads){
   if(!bRestart){
     UINT lo = 0; //lower end of the range of sizes to be timed
     printf("Enter lowest board size in range.\n");
-    bRestart = ReadUnsigned(lo, Parity::Even, 6);
+    bRestart = ReadBoardSize(lo, t);
 
     if(!bRestart){
       UINT hi = 0; //upper end of the range of sizes to be timed
       printf("Enter highest board size in range.\n");
-      bRestart = ReadUnsigned(hi, Parity::Even, 6);
+      bRestart = ReadBoardSize(hi, t);
 
       if(hi < lo) //in case of smart-aleck
         std::swap(lo, hi);

@@ -207,20 +207,20 @@ void CBoard::Shatter(){
       Switch(r); //flip it
 } //Shatter
 
-/// Blur a tourney by shattering it a few times. The board can be directed or
-/// undirected initially, but it will be undirected after blurring. The result
-/// should be a knight's tour in most cases.
+/// Obfuscate a tourney by shattering it a few times. The board can be directed
+/// or undirected initially, but it will be undirected after obfuscating. The
+/// result should be a knight's tour in most cases.
 
-void CBoard::Blur(){
+void CBoard::Obfuscate(){
   MakeDirected(); //need a directed board
   
-  for(int i=0; i<16; i++){
+  for(int i=0; i<16; i++)
     Shatter();
-    Join();
-  } //for
+
+  JoinUntilTour();
 
   MakeUndirected(); //make it undirected before returning
-} //Blur
+} //Obfuscate
 
 /// Join a tourney, that is, attempt to make it into a knight's tour by 
 /// switching rails. Assumes that the tourney is directed. First a rail
@@ -233,15 +233,18 @@ void CBoard::Blur(){
 /// cycles. A breadth-first spanning tree of this graph is shown on the right.
 ///
 /// \image html bfst22.png
+///
+/// \return true if the join succeeeded.
 
-void CBoard::Join(){
+bool CBoard::Join(){
   std::vector<CRail> rails; //rail list.
   FindRails(rails); //find rails and put them in the rail list
 
   //get tourney identifiers for each cell
   
   int* id = new int[m_nSize]; //tourney identifiers
-  const int numcycles = GetTourneyIds(id); //get tourney id for each cell
+  const UINT numcycles = GetTourneyIds(id); //get tourney id for each cell
+  if(numcycles == 1)return true; //bail out, we're good
 
   //construct the rail graph
 
@@ -285,13 +288,15 @@ void CBoard::Join(){
 
   //switch rails in a spanning tree of the rail graph
 
-  std::vector<UINT> spanningtree; //rails in spanning tree of rail graph
-  g.BFSF(spanningtree); //could use g.DFST instead
+  std::vector<UINT> spanningforest; //rails in spanning forest of rail graph
+  const UINT numtrees = g.BFSF(spanningforest); 
 
-  for(UINT i: spanningtree){ //for each rail in the spanning tree
+  for(UINT i: spanningforest){ //for each rail in the spanning forest
     UINT j = vecEdgeToRail[i]; //index of rail in rail list
     Switch(rails[j]); //switch a spanning tree rail
   } //for
+
+  return numtrees == 1;
 } //Join
 
 /// Join a tourney until it becomes a knight's tour. Maintains directedness. 
@@ -308,9 +313,12 @@ void CBoard::JoinUntilTour(){
     bWasUndirected = true;
     MakeDirected();
   } //if
+
+  UINT numcycles; //number of cycles
   
-  while(!IsTour())
-    Join();
+  do{
+    numcycles = Join();
+  }while(numcycles > 1);
 
   //clean up and exit
 

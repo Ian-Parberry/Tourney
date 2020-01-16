@@ -36,7 +36,7 @@
 /// \brief Chessboard.
 ///
 /// CBoard adds to CBaseBoard the additional functionality needed to shatter,
-/// join, and blur tourneys. It contains an implementation of the new
+/// join, and obfuscate tourneys. It contains an implementation of the new
 /// algorithms presented in the paper.
 
 class CBoard: public CBaseBoard{
@@ -47,7 +47,7 @@ class CBoard: public CBaseBoard{
     bool IsRail(int s0, int d0, int s1, int d1); ///< Rail test.
     bool IsRail(CRail& r); ///< Rail test.
 
-    void Join(); ///< Join cycles to reduce tourney size.
+    bool Join(); ///< Join cycles to reduce tourney size.
     
   public:
     CBoard(); ///< Constructor.
@@ -58,7 +58,7 @@ class CBoard: public CBaseBoard{
     void Shatter(); ///< Shatter tourneys into more tourneys.
     void JoinUntilTour(); ///< Join cycles to reduce tourney size.
 
-    void Blur(); ///< Blur function.
+    void Obfuscate(); ///< Obfuscate function.
 }; //CBoard
 
 #endif

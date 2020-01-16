@@ -72,7 +72,7 @@ void CGenerator::Generate(const CTourneyDesc& t, int nThreads){
   if(gentype == GeneratorType::DivideAndConquer){ 
     CBoard b(m_nWidth, m_nHeight); //board for the tour
     CDivideAndConquer().Generate(b, cycletype); //generate it
-    if(t.m_bBlur)b.Blur(); //blur if necessary
+    if(t.m_bObfuscate)b.Obfuscate(); //obfuscate if necessary
 
     std::string s = MakeFileNameBase(t, b.GetWidth()); //file name
 
@@ -84,7 +84,7 @@ void CGenerator::Generate(const CTourneyDesc& t, int nThreads){
     CBoard b(m_nWidth, m_nHeight); //board for the tour
     CConcentricBraid().Generate(b); //generate it
     if(cycletype == CycleType::TourFromTourney)b.JoinUntilTour(); //make tour
-    if(t.m_bBlur)b.Blur(); //blur if necessary
+    if(t.m_bObfuscate)b.Obfuscate(); //obfuscate if necessary
 
     std::string s = MakeFileNameBase(t, b.GetWidth()); //save file name
     b.Save(s); //save to text file
@@ -95,7 +95,7 @@ void CGenerator::Generate(const CTourneyDesc& t, int nThreads){
     CBoard b(m_nWidth, m_nHeight); //board for the tour
     CFourCover().Generate(b); //generate it
     if(cycletype == CycleType::TourFromTourney)b.JoinUntilTour(); //make tour
-    if(t.m_bBlur)b.Blur(); //blur if necessary
+    if(t.m_bObfuscate)b.Obfuscate(); //obfuscate if necessary
 
     std::string s = MakeFileNameBase(t, b.GetWidth()); //save file name
     b.Save(s); //save to text file
@@ -204,31 +204,33 @@ void CGenerator::Measure(const CTourneyDesc& t, int nThreads, int n){
 
   //now process the results
 
-  double fSingleMove[8] = {0}; ///< Single move count
-  double fDoubleMove[8] = {0}; ///< Double move count
+  double fSingleMove[8] = {0}; //single move count
+  double fRelativeMove[8] = {0}; //relative move count
   
-  double fSingleMean[8] = {0}; ///< Single move observed mean
-  double fDoubleMean[8] = {0}; ///< Double move observed mean 
+  double fSingleMean[8] = {0}; //single move observed mean
+  double fRelativeMean[8] = {0}; //relative move observed mean 
     
-  double fSingleStdev[8] = {0}; ///< Single move standard deviation
-  double fDoubleStdev[8] = {0}; ///< Double move standard deviation
+  double fSingleStdev[8] = {0}; //single move standard deviation
+  double fRelativeStdev[8] = {0}; //relative move standard deviation
 
-  for(CSearchResult r: results)
+  //////////////////////////////////////////////////////////////////////
+
+    for(CSearchResult r: results)
     for(int i=0; i<8; i++){
       fSingleMove[i] += (double)r.m_nSingleMove[i];
-      fDoubleMove[i] += (double)r.m_nDoubleMove[i];
+      fRelativeMove[i] += (double)r.m_nRelativeMove[i];
     } //for
 
   for(int i=0; i<8; i++){
     fSingleMove[i] /= (double)m_nSize;
-    fDoubleMove[i] /= (double)m_nSize;
+    fRelativeMove[i] /= (double)m_nSize;
   } //for
 
   //compute observed mean
   
   for(int i=0; i<8; i++){
     fSingleMean[i] = fSingleMove[i]/(double)n;
-    fDoubleMean[i] = fDoubleMove[i]/(double)n;
+    fRelativeMean[i] = fRelativeMove[i]/(double)n;
   } //for
 
   //compute observed standard deviation
@@ -238,7 +240,7 @@ void CGenerator::Measure(const CTourneyDesc& t, int nThreads, int n){
   for(CSearchResult r: results){
     for(int i=0; i<8; i++){
       fSingleStdev[i] += sqr((double)r.m_nSingleMove[i]/denom - fSingleMean[i]);
-      fDoubleStdev[i] += sqr((double)r.m_nDoubleMove[i]/denom - fDoubleMean[i]);
+      fRelativeStdev[i] += sqr((double)r.m_nRelativeMove[i]/denom - fRelativeMean[i]);
     } //for
   } //for
   
@@ -247,7 +249,7 @@ void CGenerator::Measure(const CTourneyDesc& t, int nThreads, int n){
 
     for(int i=0; i<8; i++){
       fSingleStdev[i] = sqrt(fSingleStdev[i]/denom);
-      fDoubleStdev[i] = sqrt(fDoubleStdev[i]/denom);
+      fRelativeStdev[i] = sqrt(fRelativeStdev[i]/denom);
     } //for
   } //if
 
@@ -264,9 +266,9 @@ void CGenerator::Measure(const CTourneyDesc& t, int nThreads, int n){
     fprintf(output, "Stdev\t"); OutputStat(output, fSingleStdev);
     fprintf(output, "\n");
     
-    fprintf(output, "Double\n");    
-    fprintf(output, "Mean\t");  OutputStat(output, fDoubleMean);    
-    fprintf(output, "Stdev\t"); OutputStat(output, fDoubleStdev);
+    fprintf(output, "Relative\n");    
+    fprintf(output, "Mean\t");  OutputStat(output, fRelativeMean);    
+    fprintf(output, "Stdev\t"); OutputStat(output, fRelativeStdev);
 
     fclose(output); //close file
   } //if

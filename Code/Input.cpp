@@ -26,8 +26,8 @@
 #include "Input.h"
 #include "Includes.h"
 
-/// This function will return only if the user types an even
-/// unsigned integer or the letter 'q' to quit.
+/// Read from the user until they enter a large enough unsigned integer of the
+/// correct parity, or the letter 'q' to quit.
 /// \param n [out] The unsigned integer typed by the user.
 /// \param parity The parity of the unsigned integer to be read.
 /// \param lo Lower bound for the unsigned integer to be read.
@@ -51,8 +51,22 @@ bool ReadUnsigned(UINT& n, Parity parity, UINT lo){
     else{
       const int args = sscanf(b, "%u\n", &n); //parse input
       ferror = args != 1; //format error if number of arguments is not 1
-      const bool perror = parity == Parity::Even && (n & 1) == 1 ||
-        parity == Parity::Odd && (n & 1) == 0;
+      bool perror = false; //parity error
+
+      switch(parity){ //check for parity error
+        case Parity::ZeroMod4:
+          perror = n%4 != 0;
+          break;
+
+        case Parity::Even:
+          perror = (n & 1) != 0;
+          break;
+
+        case Parity::Odd:
+          perror = (n & 1) != 1;
+          break;
+      } //switch
+
       nerror = perror || n < lo; //n has the wrong parity or is too small
 
       if(ferror) //format error
@@ -65,6 +79,22 @@ bool ReadUnsigned(UINT& n, Parity parity, UINT lo){
   
   return false; //got a valid input, don't quit
 } //ReadUnsigned
+
+/// Read the board size (width and height) for a tourney.
+/// ReadUnsigned(UINT&, Parity, UINT) is called to read from the user until
+/// they enter a large enough unsigned integer of the correct parity, or the
+/// letter 'q' to quit.
+/// \param n [out] The board size typed by the user.
+/// \param t Tourney descriptor.
+/// \return true If the user wants to quit instead.
+
+bool ReadBoardSize(UINT& n, const CTourneyDesc& t){
+  const Parity parity = (t.m_eGenerator == GeneratorType::FourCover)? 
+    Parity::ZeroMod4: Parity::Even;
+  const UINT lo = (t.m_eCycle == CycleType::Tourney)? 4: 6;
+   
+  return ReadUnsigned(n, parity, lo);
+} //ReadBoardSize
 
 /// \brief Read a single character from stdin.
 ///
@@ -225,28 +255,28 @@ bool ReadCycleType(CycleType& t){
   return false; //don't restart
 } //ReadCycleType
 
-/// Read a character from stdin and decode it into blur status.
-/// \param blurred [out] true if the user requests blurring.
+/// Read a character from stdin and decode it into obfuscate status.
+/// \param obfuscate [out] true if the user requests blurring.
 /// \return true If the user wants to restart instead.
 
-bool ReadBlur(bool& blurred){
-  printf("Blurred [yn], r to restart?\n");
+bool ReadObfuscate(bool& obfuscate){
+  printf("Obfuscated [yn], r to restart?\n");
 
   std::set<char> s = {'y', 'n', 'r'}; //admissible characters
   const char c = ReadCharacter(s); //read admissible character from user
-  blurred = c == 'y'; //yes to blur
+  obfuscate = c == 'y'; //yes to obfuscate
 
   const bool bRestart = c == 'r'; //r to restart
 
-  if(bRestart){
-    if(blurred)
-      printf("Tourney(s) will be blurred.\n");
+  if(!bRestart){
+    if(obfuscate)
+      printf("Obfuscating.\n");
     else
-      printf("Tourney(s) will not be blurred.\n");
+      printf("No obfuscation\n");
   } //if
 
   return bRestart; 
-} //ReadBlur
+} //ReadObfuscate
 
 /// Print keyboard mapping for tasks.
 

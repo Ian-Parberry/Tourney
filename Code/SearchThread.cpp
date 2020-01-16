@@ -57,7 +57,7 @@ void CSearchThread::Generate(CSearchRequest& request){
 
   const GeneratorType gentype = request.m_cTourneyDesc.m_eGenerator; //generator
   const CycleType cycletype = request.m_cTourneyDesc.m_eCycle; //tour or tourney
-  const bool blur = request.m_cTourneyDesc.m_bBlur; //whether to blur
+  const bool obfuscate = request.m_cTourneyDesc.m_bObfuscate; //whether to obfuscate
   const int seed = request.m_nSeed; //PRNG seed
  
   switch(gentype){
@@ -85,7 +85,7 @@ void CSearchThread::Generate(CSearchRequest& request){
   if(cycletype == CycleType::TourFromTourney) //make tour from tourney
     pBoard->JoinUntilTour();
 
-  if(blur)pBoard->Blur(); //blur
+  if(obfuscate)pBoard->Obfuscate(); //obfuscate
  
   if(request.m_bDiscard){ //report statistics
     CSearchResult result(nullptr, request.m_cTourneyDesc);
@@ -101,7 +101,7 @@ void CSearchThread::Generate(CSearchRequest& request){
 
         int n2 = pBoard->GetMoveIndex(dest, dest2) - n;
         if(n2 < 0)n2 += 8;  //2nd move index in 0..7, relative to 1st move
-        result.m_nDoubleMove[n2]++; //record double move
+        result.m_nRelativeMove[n2]++; //record double move
       } //if
     } //for
     

@@ -40,9 +40,9 @@ class CBoard; //forward declaration
 struct CTourneyDesc{
   GeneratorType m_eGenerator = GeneratorType::Unknown; ///< Generator type.
   CycleType m_eCycle =  CycleType::Unknown; ///< Cycle type.
-  bool m_bBlur = false; ///< Whether to blur.
+  bool m_bObfuscate = false; ///< Whether to obfuscate.
 
-  CTourneyDesc(GeneratorType gen, CycleType c, bool blur=false); ///< Constructor.
+  CTourneyDesc(GeneratorType gen, CycleType c, bool obfuscate=false); ///< Constructor.
   CTourneyDesc(); ///< Default constructor.
 }; //CTourneyDesc
 
@@ -83,7 +83,7 @@ struct CSearchResult{
   int m_nSize = 0; ///< Board size.
 
   UINT64 m_nSingleMove[8] = {0}; ///< Single move count.
-  UINT64 m_nDoubleMove[8] = {0}; ///< Double move count.
+  UINT64 m_nRelativeMove[8] = {0}; ///< Double move count.
     
   CSearchResult(CBoard* b, const CTourneyDesc& t); ///< Constructor.
   CSearchResult(); ///< Default constructor.

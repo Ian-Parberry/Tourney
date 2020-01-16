@@ -184,9 +184,12 @@ void CGraph::InsertEdge(const UINT i, const UINT j){
 
 /// Find a random breadth-first spanning forest (BFSF).
 /// \param [out] result A vector of indices of the edges in a BFSF.
+/// \return Number of trees in the spanning forest.
 
-void CGraph::BFSF(std::vector<UINT>& result){
-  for(UINT i=0; i<m_nNumVerts; i++)
+UINT CGraph::BFSF(std::vector<UINT>& result){
+  UINT numtrees = 0; //number of trees in spanning forest
+
+  for(UINT i=0; i<m_nNumVerts; i++){
     if(!m_pVertexList[i].Marked()){
       m_qBFSQueue.push(&m_pVertexList[i]);
       m_pVertexList[i].Mark();
@@ -201,11 +204,13 @@ void CGraph::BFSF(std::vector<UINT>& result){
 
         const int n = (int)pAdjList->size();
         auto& adjacencylist = *pAdjList;
+
         for(int i=0; i<n-1; i++)
           std::swap(adjacencylist[i], adjacencylist[m_cRandom.randn(i, n-1)]);
     
         for(CEdge* pEdge: *pAdjList){ //for edges incident with current vertex
           CVertex* next = pEdge->GetNextVertex(current); //vertex at other end
+
           if(next != nullptr && !next->Marked()){ //if next vertex is unvisited
             result.push_back(pEdge->GetIndex()); //append edge index to  result
             m_qBFSQueue.push(next); //recurse on next vertex 
@@ -215,7 +220,12 @@ void CGraph::BFSF(std::vector<UINT>& result){
       } //while
     } //if
 
+    numtrees++; //one more tree in the forest
+  } //for
+
   //PrintGraph();
+
+  return numtrees;
 } //BFSF
 
 /// Print the graph to graph.txt, used to get the example in the paper.

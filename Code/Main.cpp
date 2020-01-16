@@ -47,7 +47,7 @@ int main(){
   //print banner
 
   printf("Ian Parberry's square tourney generator");
-  printf(" (%d concurrent threads).\n", nNumThreads);
+  printf(" with %d concurrent threads.\n", nNumThreads);
   printf("-------------------------------------------------------------------");
   putchar('\n');
 
@@ -78,11 +78,11 @@ int main(){
         } //if
 
         if(!bRestart){
-          bool blur = false; //blur flag
-          bool bRestart = ReadBlur(blur); //get the blur flag
+          bool obfuscate = false; //obfuscate flag
+          bool bRestart = ReadObfuscate(obfuscate); //get the obfuscate flag
           
           if(!bRestart) //start the task
-            StartTask(task, CTourneyDesc(gentype, cycletype, blur), nNumThreads);       
+            StartTask(task, CTourneyDesc(gentype, cycletype, obfuscate), nNumThreads);       
         } //if
       } //if
     } //while

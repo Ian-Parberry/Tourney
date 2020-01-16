@@ -116,7 +116,7 @@ class CGraph{
     ~CGraph(); ///< Destructor.
 
     void InsertEdge(const UINT i, const UINT j); ///< Insert an edge.
-    void BFSF(std::vector<UINT>& result); ///< Breadth-first spanning forest.
+    UINT BFSF(std::vector<UINT>& result); ///< Breadth-first spanning forest.
 
     void PrintGraph(); ///< Print the graph to a text file.
 }; //CGraph

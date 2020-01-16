@@ -76,7 +76,7 @@ enum class Task{
 /// Even or odd parity, or don't care at all.
 
 enum class Parity{
-  DontCare, Even, Odd
+  DontCare, Even, Odd, ZeroMod4
 }; //Task
 
 /////////////////////////////////////////////////////////////////////////
