@@ -1,0 +1,5 @@
+var searchData=
+[
+  ['g_5fbfinished',['g_bFinished',['../_search_thread_8cpp.html#a5c74e8e27002d69260e7f85e046d233b',1,'g_bFinished():&#160;SearchThread.cpp'],['../_takefuji_lee_8cpp.html#a5c74e8e27002d69260e7f85e046d233b',1,'g_bFinished():&#160;TakefujiLee.cpp'],['../_warnsdorff_8cpp.html#a5c74e8e27002d69260e7f85e046d233b',1,'g_bFinished():&#160;Warnsdorff.cpp']]],
+  ['g_5fvecdeltas',['g_vecDeltas',['../_base_board_8cpp.html#aa4d3cc766e591abc68063c9132654ba9',1,'g_vecDeltas():&#160;Helpers.cpp'],['../_board_8cpp.html#aa4d3cc766e591abc68063c9132654ba9',1,'g_vecDeltas():&#160;Helpers.cpp'],['../_helpers_8cpp.html#aa4d3cc766e591abc68063c9132654ba9',1,'g_vecDeltas():&#160;Helpers.cpp'],['../_rail_8cpp.html#aa4d3cc766e591abc68063c9132654ba9',1,'g_vecDeltas():&#160;Helpers.cpp'],['../_structs_8cpp.html#aa4d3cc766e591abc68063c9132654ba9',1,'g_vecDeltas():&#160;Helpers.cpp'],['../_takefuji_lee_8cpp.html#aa4d3cc766e591abc68063c9132654ba9',1,'g_vecDeltas():&#160;Helpers.cpp'],['../_warnsdorff_8cpp.html#aa4d3cc766e591abc68063c9132654ba9',1,'g_vecDeltas():&#160;Helpers.cpp']]]
+];
