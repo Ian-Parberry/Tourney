@@ -2,7 +2,7 @@
 
 This code is to accompany the paper "[Tourneys and the Fast Generation and Obfuscation of Closed Knight's Tours](http://ianparberry.com/research/tourneys/)", by [Ian Parberry](http://ianparberry.com/).
 For more details,
-[RTFM](http://ianparberry.com/research/tourneys/doxygen/). 
+[RTFM](https://ian-parberry.github.io/Tourney). 
 
 ## License
 
