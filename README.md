@@ -1,8 +1,8 @@
 # Tourney and Closed Knight's Tour Generator
 
 This code is to accompany the paper "[Tourneys and the Fast Generation and Obfuscation of Closed Knight's Tours](http://ianparberry.com/research/tourneys/)", by [Ian Parberry](http://ianparberry.com/).
-For more details,
-[RTFM](https://ian-parberry.github.io/Tourney). 
+For instructions on how to compile, run, and grok the code, read the Doxygen-generated
+[documentation](https://ian-parberry.github.io/Tourney). 
 
 ## License
 
