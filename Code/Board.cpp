@@ -314,11 +314,10 @@ void CBoard::JoinUntilTour(){
     MakeDirected();
   } //if
 
-  UINT numcycles; //number of cycles
+  bool bIsTour = false;
   
-  do{
-    numcycles = Join();
-  }while(numcycles > 1);
+  while(!bIsTour)
+    bIsTour = Join();
 
   //clean up and exit
 

@@ -32,7 +32,6 @@
 #include "Rail.h"
 #include "BaseBoard.h"
 
-
 /// \brief Chessboard.
 ///
 /// CBoard adds to CBaseBoard the additional functionality needed to shatter,
