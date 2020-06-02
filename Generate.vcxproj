@@ -121,12 +121,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Knight%27s Tours\Search\Code\FourCover.cpp" />
-    <ClCompile Include="..\..\Knight%27s Tours\Search\Code\Warnsdorff.cpp" />
     <ClCompile Include="Code\BaseBoard.cpp" />
     <ClCompile Include="Code\Board.cpp" />
     <ClCompile Include="Code\ConcentricBraid.cpp" />
     <ClCompile Include="Code\DivideAndConquer.cpp" />
+    <ClCompile Include="Code\FourCover.cpp" />
     <ClCompile Include="Code\Generator.cpp" />
     <ClCompile Include="Code\Graph.cpp" />
     <ClCompile Include="Code\Helpers.cpp" />
@@ -143,16 +142,15 @@
     <ClCompile Include="Code\ThreadSafeQueue.cpp" />
     <ClCompile Include="Code\Tile.cpp" />
     <ClCompile Include="Code\Timer.cpp" />
+    <ClCompile Include="Code\Warnsdorff.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Knight%27s Tours\Search\Code\FourCover.h" />
-    <ClInclude Include="..\..\Knight%27s Tours\Search\Code\resource.h" />
-    <ClInclude Include="..\..\Knight%27s Tours\Search\Code\Warnsdorff.h" />
     <ClInclude Include="Code\BaseBoard.h" />
     <ClInclude Include="Code\Board.h" />
     <ClInclude Include="Code\ConcentricBraid.h" />
     <ClInclude Include="Code\Defines.h" />
     <ClInclude Include="Code\DivideAndConquer.h" />
+    <ClInclude Include="Code\FourCover.h" />
     <ClInclude Include="Code\Generator.h" />
     <ClInclude Include="Code\Graph.h" />
     <ClInclude Include="Code\Helpers.h" />
@@ -169,12 +167,10 @@
     <ClInclude Include="Code\ThreadSafeQueue.h" />
     <ClInclude Include="Code\Tile.h" />
     <ClInclude Include="Code\Timer.h" />
+    <ClInclude Include="Code\Warnsdorff.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\Knight%27s Tours\Search\Generate.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\Knight%27s Tours\Search\Code\tourneygen.ico" />
+    <ResourceCompile Include="Generate.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
